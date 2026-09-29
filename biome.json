@@ -1,0 +1,1 @@
+{"$schema":"https://biomejs.dev/schemas/2.2.0/schema.json","files":{"ignore":["dist","node_modules"]},"formatter":{"enabled":true,"indentStyle":"space"},"linter":{"enabled":true,"rules":{"recommended":true}}}
