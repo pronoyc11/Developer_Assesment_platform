@@ -8,7 +8,8 @@ dist/
 coverage/
 
 *.log
-
+.claude
+.agents
 .DS_Store
 
 .vscode/
