@@ -202,7 +202,7 @@ export type AuditLogWhereInput = {
   OR?: Prisma.AuditLogWhereInput[]
   NOT?: Prisma.AuditLogWhereInput | Prisma.AuditLogWhereInput[]
   id?: Prisma.UuidFilter<"AuditLog"> | string
-  actorId?: Prisma.StringNullableFilter<"AuditLog"> | string | null
+  actorId?: Prisma.UuidNullableFilter<"AuditLog"> | string | null
   action?: Prisma.StringFilter<"AuditLog"> | string
   entity?: Prisma.StringFilter<"AuditLog"> | string
   entityId?: Prisma.StringNullableFilter<"AuditLog"> | string | null
@@ -231,7 +231,7 @@ export type AuditLogWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.AuditLogWhereInput | Prisma.AuditLogWhereInput[]
   OR?: Prisma.AuditLogWhereInput[]
   NOT?: Prisma.AuditLogWhereInput | Prisma.AuditLogWhereInput[]
-  actorId?: Prisma.StringNullableFilter<"AuditLog"> | string | null
+  actorId?: Prisma.UuidNullableFilter<"AuditLog"> | string | null
   action?: Prisma.StringFilter<"AuditLog"> | string
   entity?: Prisma.StringFilter<"AuditLog"> | string
   entityId?: Prisma.StringNullableFilter<"AuditLog"> | string | null
@@ -262,7 +262,7 @@ export type AuditLogScalarWhereWithAggregatesInput = {
   OR?: Prisma.AuditLogScalarWhereWithAggregatesInput[]
   NOT?: Prisma.AuditLogScalarWhereWithAggregatesInput | Prisma.AuditLogScalarWhereWithAggregatesInput[]
   id?: Prisma.UuidWithAggregatesFilter<"AuditLog"> | string
-  actorId?: Prisma.StringNullableWithAggregatesFilter<"AuditLog"> | string | null
+  actorId?: Prisma.UuidNullableWithAggregatesFilter<"AuditLog"> | string | null
   action?: Prisma.StringWithAggregatesFilter<"AuditLog"> | string
   entity?: Prisma.StringWithAggregatesFilter<"AuditLog"> | string
   entityId?: Prisma.StringNullableWithAggregatesFilter<"AuditLog"> | string | null
@@ -494,7 +494,7 @@ export type AuditLogScalarWhereInput = {
   OR?: Prisma.AuditLogScalarWhereInput[]
   NOT?: Prisma.AuditLogScalarWhereInput | Prisma.AuditLogScalarWhereInput[]
   id?: Prisma.UuidFilter<"AuditLog"> | string
-  actorId?: Prisma.StringNullableFilter<"AuditLog"> | string | null
+  actorId?: Prisma.UuidNullableFilter<"AuditLog"> | string | null
   action?: Prisma.StringFilter<"AuditLog"> | string
   entity?: Prisma.StringFilter<"AuditLog"> | string
   entityId?: Prisma.StringNullableFilter<"AuditLog"> | string | null

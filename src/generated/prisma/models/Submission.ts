@@ -226,8 +226,8 @@ export type SubmissionWhereInput = {
   OR?: Prisma.SubmissionWhereInput[]
   NOT?: Prisma.SubmissionWhereInput | Prisma.SubmissionWhereInput[]
   id?: Prisma.UuidFilter<"Submission"> | string
-  attemptId?: Prisma.StringFilter<"Submission"> | string
-  assessmentItemId?: Prisma.StringFilter<"Submission"> | string
+  attemptId?: Prisma.UuidFilter<"Submission"> | string
+  assessmentItemId?: Prisma.UuidFilter<"Submission"> | string
   answer?: Prisma.StringNullableFilter<"Submission"> | string | null
   score?: Prisma.IntFilter<"Submission"> | number
   status?: Prisma.EnumSubmissionStatusFilter<"Submission"> | $Enums.SubmissionStatus
@@ -256,8 +256,8 @@ export type SubmissionWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.SubmissionWhereInput | Prisma.SubmissionWhereInput[]
   OR?: Prisma.SubmissionWhereInput[]
   NOT?: Prisma.SubmissionWhereInput | Prisma.SubmissionWhereInput[]
-  attemptId?: Prisma.StringFilter<"Submission"> | string
-  assessmentItemId?: Prisma.StringFilter<"Submission"> | string
+  attemptId?: Prisma.UuidFilter<"Submission"> | string
+  assessmentItemId?: Prisma.UuidFilter<"Submission"> | string
   answer?: Prisma.StringNullableFilter<"Submission"> | string | null
   score?: Prisma.IntFilter<"Submission"> | number
   status?: Prisma.EnumSubmissionStatusFilter<"Submission"> | $Enums.SubmissionStatus
@@ -287,8 +287,8 @@ export type SubmissionScalarWhereWithAggregatesInput = {
   OR?: Prisma.SubmissionScalarWhereWithAggregatesInput[]
   NOT?: Prisma.SubmissionScalarWhereWithAggregatesInput | Prisma.SubmissionScalarWhereWithAggregatesInput[]
   id?: Prisma.UuidWithAggregatesFilter<"Submission"> | string
-  attemptId?: Prisma.StringWithAggregatesFilter<"Submission"> | string
-  assessmentItemId?: Prisma.StringWithAggregatesFilter<"Submission"> | string
+  attemptId?: Prisma.UuidWithAggregatesFilter<"Submission"> | string
+  assessmentItemId?: Prisma.UuidWithAggregatesFilter<"Submission"> | string
   answer?: Prisma.StringNullableWithAggregatesFilter<"Submission"> | string | null
   score?: Prisma.IntWithAggregatesFilter<"Submission"> | number
   status?: Prisma.EnumSubmissionStatusWithAggregatesFilter<"Submission"> | $Enums.SubmissionStatus
@@ -578,8 +578,8 @@ export type SubmissionScalarWhereInput = {
   OR?: Prisma.SubmissionScalarWhereInput[]
   NOT?: Prisma.SubmissionScalarWhereInput | Prisma.SubmissionScalarWhereInput[]
   id?: Prisma.UuidFilter<"Submission"> | string
-  attemptId?: Prisma.StringFilter<"Submission"> | string
-  assessmentItemId?: Prisma.StringFilter<"Submission"> | string
+  attemptId?: Prisma.UuidFilter<"Submission"> | string
+  assessmentItemId?: Prisma.UuidFilter<"Submission"> | string
   answer?: Prisma.StringNullableFilter<"Submission"> | string | null
   score?: Prisma.IntFilter<"Submission"> | number
   status?: Prisma.EnumSubmissionStatusFilter<"Submission"> | $Enums.SubmissionStatus

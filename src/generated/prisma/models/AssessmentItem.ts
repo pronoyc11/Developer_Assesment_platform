@@ -268,8 +268,8 @@ export type AssessmentItemWhereInput = {
   OR?: Prisma.AssessmentItemWhereInput[]
   NOT?: Prisma.AssessmentItemWhereInput | Prisma.AssessmentItemWhereInput[]
   id?: Prisma.UuidFilter<"AssessmentItem"> | string
-  assessmentId?: Prisma.StringFilter<"AssessmentItem"> | string
-  problemId?: Prisma.StringFilter<"AssessmentItem"> | string
+  assessmentId?: Prisma.UuidFilter<"AssessmentItem"> | string
+  problemId?: Prisma.UuidFilter<"AssessmentItem"> | string
   order?: Prisma.IntFilter<"AssessmentItem"> | number
   title?: Prisma.StringFilter<"AssessmentItem"> | string
   question?: Prisma.StringFilter<"AssessmentItem"> | string
@@ -311,8 +311,8 @@ export type AssessmentItemWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.AssessmentItemWhereInput | Prisma.AssessmentItemWhereInput[]
   OR?: Prisma.AssessmentItemWhereInput[]
   NOT?: Prisma.AssessmentItemWhereInput | Prisma.AssessmentItemWhereInput[]
-  assessmentId?: Prisma.StringFilter<"AssessmentItem"> | string
-  problemId?: Prisma.StringFilter<"AssessmentItem"> | string
+  assessmentId?: Prisma.UuidFilter<"AssessmentItem"> | string
+  problemId?: Prisma.UuidFilter<"AssessmentItem"> | string
   order?: Prisma.IntFilter<"AssessmentItem"> | number
   title?: Prisma.StringFilter<"AssessmentItem"> | string
   question?: Prisma.StringFilter<"AssessmentItem"> | string
@@ -354,8 +354,8 @@ export type AssessmentItemScalarWhereWithAggregatesInput = {
   OR?: Prisma.AssessmentItemScalarWhereWithAggregatesInput[]
   NOT?: Prisma.AssessmentItemScalarWhereWithAggregatesInput | Prisma.AssessmentItemScalarWhereWithAggregatesInput[]
   id?: Prisma.UuidWithAggregatesFilter<"AssessmentItem"> | string
-  assessmentId?: Prisma.StringWithAggregatesFilter<"AssessmentItem"> | string
-  problemId?: Prisma.StringWithAggregatesFilter<"AssessmentItem"> | string
+  assessmentId?: Prisma.UuidWithAggregatesFilter<"AssessmentItem"> | string
+  problemId?: Prisma.UuidWithAggregatesFilter<"AssessmentItem"> | string
   order?: Prisma.IntWithAggregatesFilter<"AssessmentItem"> | number
   title?: Prisma.StringWithAggregatesFilter<"AssessmentItem"> | string
   question?: Prisma.StringWithAggregatesFilter<"AssessmentItem"> | string
@@ -745,8 +745,8 @@ export type AssessmentItemScalarWhereInput = {
   OR?: Prisma.AssessmentItemScalarWhereInput[]
   NOT?: Prisma.AssessmentItemScalarWhereInput | Prisma.AssessmentItemScalarWhereInput[]
   id?: Prisma.UuidFilter<"AssessmentItem"> | string
-  assessmentId?: Prisma.StringFilter<"AssessmentItem"> | string
-  problemId?: Prisma.StringFilter<"AssessmentItem"> | string
+  assessmentId?: Prisma.UuidFilter<"AssessmentItem"> | string
+  problemId?: Prisma.UuidFilter<"AssessmentItem"> | string
   order?: Prisma.IntFilter<"AssessmentItem"> | number
   title?: Prisma.StringFilter<"AssessmentItem"> | string
   question?: Prisma.StringFilter<"AssessmentItem"> | string

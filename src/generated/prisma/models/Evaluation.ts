@@ -219,8 +219,8 @@ export type EvaluationWhereInput = {
   OR?: Prisma.EvaluationWhereInput[]
   NOT?: Prisma.EvaluationWhereInput | Prisma.EvaluationWhereInput[]
   id?: Prisma.UuidFilter<"Evaluation"> | string
-  submissionId?: Prisma.StringFilter<"Evaluation"> | string
-  evaluatorId?: Prisma.StringFilter<"Evaluation"> | string
+  submissionId?: Prisma.UuidFilter<"Evaluation"> | string
+  evaluatorId?: Prisma.UuidFilter<"Evaluation"> | string
   score?: Prisma.IntFilter<"Evaluation"> | number
   feedback?: Prisma.StringNullableFilter<"Evaluation"> | string | null
   evaluatedAt?: Prisma.DateTimeFilter<"Evaluation"> | Date | string
@@ -245,7 +245,7 @@ export type EvaluationWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.EvaluationWhereInput | Prisma.EvaluationWhereInput[]
   OR?: Prisma.EvaluationWhereInput[]
   NOT?: Prisma.EvaluationWhereInput | Prisma.EvaluationWhereInput[]
-  evaluatorId?: Prisma.StringFilter<"Evaluation"> | string
+  evaluatorId?: Prisma.UuidFilter<"Evaluation"> | string
   score?: Prisma.IntFilter<"Evaluation"> | number
   feedback?: Prisma.StringNullableFilter<"Evaluation"> | string | null
   evaluatedAt?: Prisma.DateTimeFilter<"Evaluation"> | Date | string
@@ -272,8 +272,8 @@ export type EvaluationScalarWhereWithAggregatesInput = {
   OR?: Prisma.EvaluationScalarWhereWithAggregatesInput[]
   NOT?: Prisma.EvaluationScalarWhereWithAggregatesInput | Prisma.EvaluationScalarWhereWithAggregatesInput[]
   id?: Prisma.UuidWithAggregatesFilter<"Evaluation"> | string
-  submissionId?: Prisma.StringWithAggregatesFilter<"Evaluation"> | string
-  evaluatorId?: Prisma.StringWithAggregatesFilter<"Evaluation"> | string
+  submissionId?: Prisma.UuidWithAggregatesFilter<"Evaluation"> | string
+  evaluatorId?: Prisma.UuidWithAggregatesFilter<"Evaluation"> | string
   score?: Prisma.IntWithAggregatesFilter<"Evaluation"> | number
   feedback?: Prisma.StringNullableWithAggregatesFilter<"Evaluation"> | string | null
   evaluatedAt?: Prisma.DateTimeWithAggregatesFilter<"Evaluation"> | Date | string
@@ -559,8 +559,8 @@ export type EvaluationScalarWhereInput = {
   OR?: Prisma.EvaluationScalarWhereInput[]
   NOT?: Prisma.EvaluationScalarWhereInput | Prisma.EvaluationScalarWhereInput[]
   id?: Prisma.UuidFilter<"Evaluation"> | string
-  submissionId?: Prisma.StringFilter<"Evaluation"> | string
-  evaluatorId?: Prisma.StringFilter<"Evaluation"> | string
+  submissionId?: Prisma.UuidFilter<"Evaluation"> | string
+  evaluatorId?: Prisma.UuidFilter<"Evaluation"> | string
   score?: Prisma.IntFilter<"Evaluation"> | number
   feedback?: Prisma.StringNullableFilter<"Evaluation"> | string | null
   evaluatedAt?: Prisma.DateTimeFilter<"Evaluation"> | Date | string

@@ -265,9 +265,9 @@ export type AttemptWhereInput = {
   OR?: Prisma.AttemptWhereInput[]
   NOT?: Prisma.AttemptWhereInput | Prisma.AttemptWhereInput[]
   id?: Prisma.UuidFilter<"Attempt"> | string
-  assessmentId?: Prisma.StringFilter<"Attempt"> | string
-  candidateId?: Prisma.StringFilter<"Attempt"> | string
-  invitationId?: Prisma.StringNullableFilter<"Attempt"> | string | null
+  assessmentId?: Prisma.UuidFilter<"Attempt"> | string
+  candidateId?: Prisma.UuidFilter<"Attempt"> | string
+  invitationId?: Prisma.UuidNullableFilter<"Attempt"> | string | null
   status?: Prisma.EnumAttemptStatusFilter<"Attempt"> | $Enums.AttemptStatus
   startedAt?: Prisma.DateTimeNullableFilter<"Attempt"> | Date | string | null
   submittedAt?: Prisma.DateTimeNullableFilter<"Attempt"> | Date | string | null
@@ -308,8 +308,8 @@ export type AttemptWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.AttemptWhereInput | Prisma.AttemptWhereInput[]
   OR?: Prisma.AttemptWhereInput[]
   NOT?: Prisma.AttemptWhereInput | Prisma.AttemptWhereInput[]
-  assessmentId?: Prisma.StringFilter<"Attempt"> | string
-  candidateId?: Prisma.StringFilter<"Attempt"> | string
+  assessmentId?: Prisma.UuidFilter<"Attempt"> | string
+  candidateId?: Prisma.UuidFilter<"Attempt"> | string
   status?: Prisma.EnumAttemptStatusFilter<"Attempt"> | $Enums.AttemptStatus
   startedAt?: Prisma.DateTimeNullableFilter<"Attempt"> | Date | string | null
   submittedAt?: Prisma.DateTimeNullableFilter<"Attempt"> | Date | string | null
@@ -349,9 +349,9 @@ export type AttemptScalarWhereWithAggregatesInput = {
   OR?: Prisma.AttemptScalarWhereWithAggregatesInput[]
   NOT?: Prisma.AttemptScalarWhereWithAggregatesInput | Prisma.AttemptScalarWhereWithAggregatesInput[]
   id?: Prisma.UuidWithAggregatesFilter<"Attempt"> | string
-  assessmentId?: Prisma.StringWithAggregatesFilter<"Attempt"> | string
-  candidateId?: Prisma.StringWithAggregatesFilter<"Attempt"> | string
-  invitationId?: Prisma.StringNullableWithAggregatesFilter<"Attempt"> | string | null
+  assessmentId?: Prisma.UuidWithAggregatesFilter<"Attempt"> | string
+  candidateId?: Prisma.UuidWithAggregatesFilter<"Attempt"> | string
+  invitationId?: Prisma.UuidNullableWithAggregatesFilter<"Attempt"> | string | null
   status?: Prisma.EnumAttemptStatusWithAggregatesFilter<"Attempt"> | $Enums.AttemptStatus
   startedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Attempt"> | Date | string | null
   submittedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Attempt"> | Date | string | null
@@ -743,9 +743,9 @@ export type AttemptScalarWhereInput = {
   OR?: Prisma.AttemptScalarWhereInput[]
   NOT?: Prisma.AttemptScalarWhereInput | Prisma.AttemptScalarWhereInput[]
   id?: Prisma.UuidFilter<"Attempt"> | string
-  assessmentId?: Prisma.StringFilter<"Attempt"> | string
-  candidateId?: Prisma.StringFilter<"Attempt"> | string
-  invitationId?: Prisma.StringNullableFilter<"Attempt"> | string | null
+  assessmentId?: Prisma.UuidFilter<"Attempt"> | string
+  candidateId?: Prisma.UuidFilter<"Attempt"> | string
+  invitationId?: Prisma.UuidNullableFilter<"Attempt"> | string | null
   status?: Prisma.EnumAttemptStatusFilter<"Attempt"> | $Enums.AttemptStatus
   startedAt?: Prisma.DateTimeNullableFilter<"Attempt"> | Date | string | null
   submittedAt?: Prisma.DateTimeNullableFilter<"Attempt"> | Date | string | null

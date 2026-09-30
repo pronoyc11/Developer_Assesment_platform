@@ -185,7 +185,7 @@ export type RefreshTokenWhereInput = {
   OR?: Prisma.RefreshTokenWhereInput[]
   NOT?: Prisma.RefreshTokenWhereInput | Prisma.RefreshTokenWhereInput[]
   id?: Prisma.UuidFilter<"RefreshToken"> | string
-  userId?: Prisma.StringFilter<"RefreshToken"> | string
+  userId?: Prisma.UuidFilter<"RefreshToken"> | string
   tokenHash?: Prisma.StringFilter<"RefreshToken"> | string
   expiresAt?: Prisma.DateTimeFilter<"RefreshToken"> | Date | string
   revokedAt?: Prisma.DateTimeNullableFilter<"RefreshToken"> | Date | string | null
@@ -209,7 +209,7 @@ export type RefreshTokenWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.RefreshTokenWhereInput | Prisma.RefreshTokenWhereInput[]
   OR?: Prisma.RefreshTokenWhereInput[]
   NOT?: Prisma.RefreshTokenWhereInput | Prisma.RefreshTokenWhereInput[]
-  userId?: Prisma.StringFilter<"RefreshToken"> | string
+  userId?: Prisma.UuidFilter<"RefreshToken"> | string
   expiresAt?: Prisma.DateTimeFilter<"RefreshToken"> | Date | string
   revokedAt?: Prisma.DateTimeNullableFilter<"RefreshToken"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"RefreshToken"> | Date | string
@@ -233,7 +233,7 @@ export type RefreshTokenScalarWhereWithAggregatesInput = {
   OR?: Prisma.RefreshTokenScalarWhereWithAggregatesInput[]
   NOT?: Prisma.RefreshTokenScalarWhereWithAggregatesInput | Prisma.RefreshTokenScalarWhereWithAggregatesInput[]
   id?: Prisma.UuidWithAggregatesFilter<"RefreshToken"> | string
-  userId?: Prisma.StringWithAggregatesFilter<"RefreshToken"> | string
+  userId?: Prisma.UuidWithAggregatesFilter<"RefreshToken"> | string
   tokenHash?: Prisma.StringWithAggregatesFilter<"RefreshToken"> | string
   expiresAt?: Prisma.DateTimeWithAggregatesFilter<"RefreshToken"> | Date | string
   revokedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"RefreshToken"> | Date | string | null
@@ -428,7 +428,7 @@ export type RefreshTokenScalarWhereInput = {
   OR?: Prisma.RefreshTokenScalarWhereInput[]
   NOT?: Prisma.RefreshTokenScalarWhereInput | Prisma.RefreshTokenScalarWhereInput[]
   id?: Prisma.UuidFilter<"RefreshToken"> | string
-  userId?: Prisma.StringFilter<"RefreshToken"> | string
+  userId?: Prisma.UuidFilter<"RefreshToken"> | string
   tokenHash?: Prisma.StringFilter<"RefreshToken"> | string
   expiresAt?: Prisma.DateTimeFilter<"RefreshToken"> | Date | string
   revokedAt?: Prisma.DateTimeNullableFilter<"RefreshToken"> | Date | string | null

@@ -1539,6 +1539,8 @@ export const UserScalarFieldEnum = {
   avatarUrl: 'avatarUrl',
   role: 'role',
   status: 'status',
+  emailVerified: 'emailVerified',
+  emailVerifiedAt: 'emailVerifiedAt',
   authProvider: 'authProvider',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
@@ -1774,6 +1776,13 @@ export type EnumUserStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$Prism
  * Reference to a field of type 'UserStatus[]'
  */
 export type ListEnumUserStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Boolean'
+ */
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 

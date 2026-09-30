@@ -1,5 +1,15 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.3.0/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.5.15/schema.json",
+  "files": {
+    "includes": [
+      "src/**/*",
+      "prisma/**/*",
+      "package.json",
+      "tsconfig.json",
+      "biome.json",
+      "!src/generated/**/*"
+    ]
+  },
   "formatter": {
     "enabled": true,
     "indentStyle": "space",
@@ -8,7 +18,11 @@
   "linter": {
     "enabled": true
   },
-  "organizeImports": {
-    "enabled": true
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
   }
 }

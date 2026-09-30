@@ -2,7 +2,7 @@ import type {
   ErrorRequestHandler,
   NextFunction,
   Request,
-  Response
+  Response,
 } from "express";
 
 import { Prisma } from "../../generated/prisma/client.js";
@@ -13,15 +13,10 @@ export const errorHandler: ErrorRequestHandler = (
   error: unknown,
   _req: Request,
   res: Response,
-  _next: NextFunction
+  _next: NextFunction,
 ): void => {
   if (error instanceof AppError) {
-    sendError(
-      res,
-      error.message,
-      error.errors,
-      error.statusCode
-    );
+    sendError(res, error.message, error.errors, error.statusCode);
 
     return;
   }
@@ -32,30 +27,20 @@ export const errorHandler: ErrorRequestHandler = (
       "Database operation failed",
       [
         {
-          code: error.code
-        }
+          code: error.code,
+        },
       ],
-      400
+      400,
     );
 
     return;
   }
 
   if (error instanceof Error) {
-    sendError(
-      res,
-      error.message,
-      [],
-      500
-    );
+    sendError(res, error.message, [], 500);
 
     return;
   }
 
-  sendError(
-    res,
-    "Internal server error",
-    [],
-    500
-  );
+  sendError(res, "Internal server error", [], 500);
 };

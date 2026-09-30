@@ -227,8 +227,8 @@ export type InvitationWhereInput = {
   OR?: Prisma.InvitationWhereInput[]
   NOT?: Prisma.InvitationWhereInput | Prisma.InvitationWhereInput[]
   id?: Prisma.UuidFilter<"Invitation"> | string
-  assessmentId?: Prisma.StringFilter<"Invitation"> | string
-  candidateId?: Prisma.StringFilter<"Invitation"> | string
+  assessmentId?: Prisma.UuidFilter<"Invitation"> | string
+  candidateId?: Prisma.UuidFilter<"Invitation"> | string
   email?: Prisma.StringFilter<"Invitation"> | string
   token?: Prisma.StringFilter<"Invitation"> | string
   status?: Prisma.EnumInvitationStatusFilter<"Invitation"> | $Enums.InvitationStatus
@@ -268,8 +268,8 @@ export type InvitationWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.InvitationWhereInput | Prisma.InvitationWhereInput[]
   OR?: Prisma.InvitationWhereInput[]
   NOT?: Prisma.InvitationWhereInput | Prisma.InvitationWhereInput[]
-  assessmentId?: Prisma.StringFilter<"Invitation"> | string
-  candidateId?: Prisma.StringFilter<"Invitation"> | string
+  assessmentId?: Prisma.UuidFilter<"Invitation"> | string
+  candidateId?: Prisma.UuidFilter<"Invitation"> | string
   email?: Prisma.StringFilter<"Invitation"> | string
   status?: Prisma.EnumInvitationStatusFilter<"Invitation"> | $Enums.InvitationStatus
   acceptedAt?: Prisma.DateTimeNullableFilter<"Invitation"> | Date | string | null
@@ -306,8 +306,8 @@ export type InvitationScalarWhereWithAggregatesInput = {
   OR?: Prisma.InvitationScalarWhereWithAggregatesInput[]
   NOT?: Prisma.InvitationScalarWhereWithAggregatesInput | Prisma.InvitationScalarWhereWithAggregatesInput[]
   id?: Prisma.UuidWithAggregatesFilter<"Invitation"> | string
-  assessmentId?: Prisma.StringWithAggregatesFilter<"Invitation"> | string
-  candidateId?: Prisma.StringWithAggregatesFilter<"Invitation"> | string
+  assessmentId?: Prisma.UuidWithAggregatesFilter<"Invitation"> | string
+  candidateId?: Prisma.UuidWithAggregatesFilter<"Invitation"> | string
   email?: Prisma.StringWithAggregatesFilter<"Invitation"> | string
   token?: Prisma.StringWithAggregatesFilter<"Invitation"> | string
   status?: Prisma.EnumInvitationStatusWithAggregatesFilter<"Invitation"> | $Enums.InvitationStatus
@@ -656,8 +656,8 @@ export type InvitationScalarWhereInput = {
   OR?: Prisma.InvitationScalarWhereInput[]
   NOT?: Prisma.InvitationScalarWhereInput | Prisma.InvitationScalarWhereInput[]
   id?: Prisma.UuidFilter<"Invitation"> | string
-  assessmentId?: Prisma.StringFilter<"Invitation"> | string
-  candidateId?: Prisma.StringFilter<"Invitation"> | string
+  assessmentId?: Prisma.UuidFilter<"Invitation"> | string
+  candidateId?: Prisma.UuidFilter<"Invitation"> | string
   email?: Prisma.StringFilter<"Invitation"> | string
   token?: Prisma.StringFilter<"Invitation"> | string
   status?: Prisma.EnumInvitationStatusFilter<"Invitation"> | $Enums.InvitationStatus
