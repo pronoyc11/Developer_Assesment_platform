@@ -1,0 +1,25 @@
+model Submission {
+  id String @id @default(uuid()) @db.Uuid
+
+  attemptId String @db.Uuid
+  attempt   Attempt @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+
+  assessmentItemId String @db.Uuid
+  assessmentItem   AssessmentItem @relation(fields: [assessmentItemId], references: [id], onDelete: Restrict)
+
+  answer String? @db.Text
+
+  score Int @default(0)
+
+  status SubmissionStatus @default(PENDING)
+
+  submittedAt DateTime @default(now())
+
+  evaluation Evaluation?
+
+  @@unique([attemptId, assessmentItemId])
+  @@index([attemptId])
+  @@index([assessmentItemId])
+  @@index([status])
+  @@map("submissions")
+}

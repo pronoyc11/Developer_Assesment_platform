@@ -1,0 +1,29 @@
+model Payment {
+  id String @id @default(uuid()) @db.Uuid
+
+  assessmentId String @db.Uuid
+  assessment   Assessment @relation(fields: [assessmentId], references: [id], onDelete: Restrict)
+
+  createdById String @db.Uuid
+  createdBy   User @relation("PaymentCreatedBy", fields: [createdById], references: [id], onDelete: Restrict)
+
+  provider PaymentProvider @default(STRIPE)
+  status   PaymentStatus   @default(PENDING)
+
+  amount   Int
+  currency String @db.VarChar(10)
+
+  stripeCheckoutSessionId String? @unique @db.VarChar(255)
+  stripePaymentIntentId   String? @unique @db.VarChar(255)
+
+  paidAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([assessmentId])
+  @@index([createdById])
+  @@index([status])
+  @@index([provider])
+  @@map("payments")
+}

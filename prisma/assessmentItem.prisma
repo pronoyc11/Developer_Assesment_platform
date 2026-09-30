@@ -1,0 +1,30 @@
+model AssessmentItem {
+  id String @id @default(uuid()) @db.Uuid
+
+  assessmentId String @db.Uuid
+  assessment   Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+
+  problemId String @db.Uuid
+  problem   Problem @relation(fields: [problemId], references: [id], onDelete: Restrict)
+
+  order Int
+
+  title         String  @db.VarChar(255)
+  question      String  @db.Text
+  type          QuestionType
+  options       String[] @default([])
+  points        Int
+  correctAnswer String? @db.Text
+  expectedAnswer String? @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  submissions Submission[]
+
+  @@unique([assessmentId, problemId])
+  @@unique([assessmentId, order])
+  @@index([assessmentId])
+  @@index([problemId])
+  @@map("assessment_items")
+}

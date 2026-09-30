@@ -1,0 +1,33 @@
+model Assessment {
+  id String @id @default(uuid()) @db.Uuid
+
+  recruiterId String @db.Uuid
+  recruiter   User   @relation(fields: [recruiterId], references: [id], onDelete: Restrict)
+
+  title       String @db.VarChar(255)
+  description String? @db.Text
+
+  durationMinutes Int
+  passingScore    Int @default(0)
+
+  status AssessmentStatus @default(DRAFT)
+
+  publishedAt DateTime?
+  closedAt    DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  items       AssessmentItem[]
+  invitations Invitation[]
+  attempts    Attempt[]
+  payments    Payment[]
+
+  @@index([recruiterId])
+  @@index([status])
+  @@index([createdAt])
+  @@index([deletedAt])
+  @@index([recruiterId, status])
+  @@map("assessments")
+}

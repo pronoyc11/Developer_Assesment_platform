@@ -1,0 +1,18 @@
+model Evaluation {
+  id String @id @default(uuid()) @db.Uuid
+
+  submissionId String @unique @db.Uuid
+  submission   Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+
+  evaluatorId String @db.Uuid
+  evaluator   User   @relation(fields: [evaluatorId], references: [id], onDelete: Restrict)
+
+  score    Int
+  feedback String? @db.Text
+
+  evaluatedAt DateTime @default(now())
+
+  @@index([evaluatorId])
+  @@index([evaluatedAt])
+  @@map("evaluations")
+}

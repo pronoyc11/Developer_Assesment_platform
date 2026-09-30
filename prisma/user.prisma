@@ -1,0 +1,32 @@
+model User {
+  id           String     @id @default(uuid()) @db.Uuid
+  email        String     @unique @db.VarChar(255)
+  passwordHash String?
+  name         String     @db.VarChar(150)
+  avatarUrl    String?    @db.Text
+  role         Role       @default(CANDIDATE)
+  status       UserStatus @default(ACTIVE)
+
+  authProvider AuthProvider @default(LOCAL)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  recruiterProfile RecruiterProfile?
+
+  problems        Problem[]
+  assessments     Assessment[]
+  invitations     Invitation[]
+  attempts        Attempt[]
+  evaluations     Evaluation[]
+  auditLogs       AuditLog[]
+  refreshTokens   RefreshToken[]
+  paymentsCreated Payment[] @relation("PaymentCreatedBy")
+
+  @@index([role])
+  @@index([status])
+  @@index([deletedAt])
+  @@index([createdAt])
+  @@map("users")
+}

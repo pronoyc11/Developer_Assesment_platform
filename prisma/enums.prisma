@@ -1,0 +1,58 @@
+enum Role {
+  CANDIDATE
+  RECRUITER
+  ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  BLOCKED
+  SUSPENDED
+}
+
+enum QuestionType {
+  MCQ
+  WRITTEN
+}
+
+enum AssessmentStatus {
+  DRAFT
+  READY
+  PUBLISHED
+  CLOSED
+}
+
+enum AttemptStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  SUBMITTED
+  EVALUATED
+}
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  USED
+}
+
+enum SubmissionStatus {
+  PENDING
+  AUTO_EVALUATED
+  MANUALLY_EVALUATED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+}
+
+enum PaymentProvider {
+  STRIPE
+}
+
+enum AuthProvider {
+  LOCAL
+  GOOGLE
+}
+

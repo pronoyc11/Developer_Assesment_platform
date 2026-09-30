@@ -1,0 +1,30 @@
+model Problem {
+  id String @id @default(uuid()) @db.Uuid
+
+  recruiterId String @db.Uuid
+  recruiter   User   @relation(fields: [recruiterId], references: [id], onDelete: Restrict)
+
+  title    String @db.VarChar(255)
+  question String @db.Text
+
+  type QuestionType
+
+  options        String[] @default([])
+  correctAnswer  String?  @db.Text
+  expectedAnswer String? @db.Text
+
+  points Int @default(1)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  assessmentItems AssessmentItem[]
+
+  @@index([recruiterId])
+  @@index([type])
+  @@index([createdAt])
+  @@index([deletedAt])
+  @@index([recruiterId, type])
+  @@map("problems")
+}
