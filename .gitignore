@@ -14,3 +14,7 @@ coverage/
 
 .vscode/
 .idea/
+.agents
+.claude
+.windsurf
+.docs

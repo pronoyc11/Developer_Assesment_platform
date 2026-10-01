@@ -11,7 +11,7 @@ export const configureSecurity = (app: Application) => {
 
   app.use(
     cors({
-      origin: env.FRONTEND_URL,
+      origin: true,
       credentials: true,
     }),
   );

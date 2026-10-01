@@ -11,7 +11,7 @@ const app = express();
 configureSecurity(app);
 
 app.use(cookieParser());
-
+// stripe listen --forward-to localhost:5000/api/v1/payments/stripe/webhook
 app.post(
   "/api/v1/payments/stripe/webhook",
   express.raw({ type: "application/json" }),

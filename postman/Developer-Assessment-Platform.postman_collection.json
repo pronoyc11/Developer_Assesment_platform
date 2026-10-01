@@ -238,16 +238,9 @@
     {
       "name": "Users",
       "auth": {
-        "type": "bearer",
-        "bearer": [
-          {
-            "key": "token",
-            "value": "PASTE_CANDIDATE_ACCESS_JWT",
-            "type": "string"
-          }
-        ]
+        "type": "noauth"
       },
-      "description": "Authenticated user routes. Replace the literal bearer value in this folder or use the Postman cookie jar.",
+      "description": "Authenticated user routes use the accessToken cookie saved by Postman after login. No Authorization header is sent by this folder.",
       "item": [
         {
           "name": "Get own profile",
@@ -298,7 +291,8 @@
               }
             },
             "url": "{{baseUrl}}/users/me/password"
-          }
+          },
+          "description": "Uses the Postman cookie jar. For an existing imported request, set Authorization to No Auth and remove any stale Bearer header; the server prioritizes Authorization when present."
         },
         {
           "name": "Upload avatar",

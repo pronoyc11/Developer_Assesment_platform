@@ -14,6 +14,7 @@ const getStripeClient = (): Stripe => {
 
 const getFee = (): { amount: number; currency: string } => {
   const currency = env.ASSESSMENT_PUBLISH_CURRENCY.toLowerCase();
+  console.log(env.ASSESSMENT_PUBLISH_FEE);
   if (
     !Number.isSafeInteger(env.ASSESSMENT_PUBLISH_FEE) ||
     env.ASSESSMENT_PUBLISH_FEE <= 0 ||
@@ -62,10 +63,7 @@ export const createPublishingCheckout = async (
           throw new AppError(409, "This assessment has already been paid for.");
         }
         if (existing) {
-          throw new AppError(
-            409,
-            "A payment session is already pending for this assessment.",
-          );
+          return existing;
         }
 
         return transaction.payment.create({
@@ -101,6 +99,7 @@ export const createPublishingCheckout = async (
         mode: "payment",
         client_reference_id: payment.id,
         metadata: { paymentId: payment.id, assessmentId, recruiterId },
+        // customer_email:"DapRecruiter@gmail.com",
         line_items: [
           {
             quantity: 1,
@@ -116,6 +115,7 @@ export const createPublishingCheckout = async (
       },
       { idempotencyKey: payment.id },
     );
+    console.log(session);
     if (!session.url) {
       throw new Error("Stripe returned no checkout URL.");
     }
@@ -321,3 +321,5 @@ export const handleStripeWebhook = async (
   }
   return { received: true, processed: false };
 };
+
+//stripe listen --forward-to localhost:5000/api/v1/payments/stripe/webhook
