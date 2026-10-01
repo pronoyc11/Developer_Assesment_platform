@@ -1,8 +1,13 @@
 import { createClient, type RedisClientType } from "redis";
 import { env } from "../config/env";
 
-export const redisClient: RedisClientType = createClient({
-  url: env.REDIS_URL,
+const redisClient = createClient({
+  username: env.REDIS_USERNAME,
+  password: env.REDIS_PASSWORD,
+  socket: {
+    host: env.REDIS_HOST,
+    port: Number(env.REDIS_PORT)
+  }
 });
 
 redisClient.on("error", (error) => {

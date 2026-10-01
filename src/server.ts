@@ -1,5 +1,6 @@
 import app from "./app";
 import { env } from "./config";
+import { transporter } from "./lib/mailer";
 import { prisma } from "./lib/prisma";
 import { connectRedis, disconnectRedis } from "./lib/redis";
 
@@ -12,6 +13,12 @@ const startServer = async (): Promise<void> => {
       await connectRedis();
     } catch (redisError) {
       console.error("Redis connection error on startup:", redisError);
+    }
+    try {
+      await transporter.verify();
+      console.log("Nodemailer connected successfully.")
+    } catch (nodemailerError) {
+      console.error("Nodemailer connection error on startup:", nodemailerError);
     }
 
     const server = app.listen(env.PORT, () => {

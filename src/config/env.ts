@@ -32,7 +32,10 @@ export const env = {
   STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY ?? "",
   STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET ?? "",
 
-  REDIS_URL: process.env.REDIS_URL ?? "redis://localhost:6379",
+  REDIS_USERNAME: process.env.REDIS_USERNAME!,
+  REDIS_HOST: process.env.REDIS_HOST!,
+  REDIS_PASSWORD: process.env.REDIS_PASSWORD!,
+  REDIS_PORT: process.env.REDIS_PORT!,
 
   FRONTEND_URL: process.env.FRONTEND_URL ?? "http://localhost:3000",
 

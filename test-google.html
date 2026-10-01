@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <h2>Hello</h2>
+  <div id="google-btn"></div>
+  <pre id="token-output" style="margin-top:20px; word-break:break-all;width:300px"></pre>
+
+  <script src="https://accounts.google.com/gsi/client" async defer onload="initGoogle()"></script>
+  <script>
+     function initGoogle() {
+    google.accounts.id.initialize({
+      client_id: '647388897667-jq8jf5rqj687ltlc3kau4klpn820gdno.apps.googleusercontent.com',
+      callback: (response) => {
+        console.log("This is callback response : ",response);
+        document.getElementById('token-output').textContent = response.credential;
+      }
+    });
+    google.accounts.id.renderButton(document.getElementById('google-btn'), {});
+}
+  </script>
+</body>
+</html>   

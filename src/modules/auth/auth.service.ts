@@ -13,10 +13,13 @@ import { prisma } from "../../lib/prisma";
 import { AppError } from "../../utils/appError";
 import { hashToken } from "../../utils/token";
 import {
+  deletePendingRegistration,
   generateNumericOtp,
+  getPendingRegistration,
   isResendCooldownActive,
   setResendCooldown,
   storeEmailVerificationOtp,
+  storePendingRegistration,
   verifyEmailVerificationOtp,
 } from "./auth.otp";
 import type { AuthenticatedUser, AuthTokens } from "./auth.type";
@@ -91,37 +94,13 @@ export const register = async (data: RegisterInput) => {
   }
 
   const passwordHash = await hashPassword(data.password);
-  const assignedRole: Role =
-    data.role === "RECRUITER" ? "RECRUITER" : "CANDIDATE";
-
-  const user = existingUser
-    ? await prisma.user.update({
-        where: {
-          id: existingUser.id,
-        },
-        data: {
-          name: data.name.trim(),
-          passwordHash,
-          authProvider: "LOCAL",
-          status: "ACTIVE",
-          deletedAt: null,
-          emailVerified: false,
-          emailVerifiedAt: null,
-          role: assignedRole,
-        },
-      })
-    : await prisma.user.create({
-        data: {
-          name: data.name.trim(),
-          email: normalizedEmail,
-          passwordHash,
-          authProvider: "LOCAL",
-          status: "ACTIVE",
-          emailVerified: false,
-          emailVerifiedAt: null,
-          role: assignedRole,
-        },
-      });
+  const role: Role = data.role === "RECRUITER" ? "RECRUITER" : "CANDIDATE";
+  await storePendingRegistration(normalizedEmail, {
+    name: data.name.trim(),
+    email: normalizedEmail,
+    passwordHash,
+    role,
+  });
 
   // Generate 6-digit numeric OTP and store in Redis with 10-minute expiration
   const otp = generateNumericOtp();
@@ -138,53 +117,63 @@ export const register = async (data: RegisterInput) => {
     );
     throw new AppError(
       502,
-      "Account registered, but verification email could not be delivered. Please try resending verification.",
+      "Registration is pending, but the verification email could not be delivered. Please try resending verification.",
     );
   }
 
   return {
-    email: user.email,
-    emailVerified: user.emailVerified,
+    email: normalizedEmail,
+    emailVerified: false,
   };
 };
 
 export const verifyEmail = async (data: VerifyEmailInput) => {
   const normalizedEmail = data.email.trim().toLowerCase();
-
-  const user = await prisma.user.findUnique({
-    where: {
-      email: normalizedEmail,
-    },
-  });
-
-  if (!user || user.deletedAt) {
-    throw new AppError(404, "User account not found");
+  const registration = await getPendingRegistration(normalizedEmail);
+  if (!registration) {
+    throw new AppError(
+      400,
+      "Registration is invalid or has expired. Please register again.",
+    );
   }
 
-  if (user.emailVerified) {
-    return {
-      email: user.email,
-      emailVerified: true,
-    };
+  const existingUser = await prisma.user.findUnique({
+    where: { email: normalizedEmail },
+  });
+  if (existingUser && !existingUser.deletedAt) {
+    throw new AppError(409, "An account with this email already exists");
   }
 
   // Verify OTP against Redis with attempt limiting and expiration
   await verifyEmailVerificationOtp(normalizedEmail, data.otp);
 
-  // Update user in database
-  const updatedUser = await prisma.user.update({
-    where: {
-      id: user.id,
-    },
-    data: {
-      emailVerified: true,
-      emailVerifiedAt: new Date(),
-    },
-  });
+  const userData = {
+    name: registration.name,
+    email: normalizedEmail,
+    passwordHash: registration.passwordHash,
+    authProvider: "LOCAL" as const,
+    status: "ACTIVE" as const,
+    deletedAt: null,
+    emailVerified: true,
+    emailVerifiedAt: new Date(),
+    role: registration.role,
+  };
 
+  const user = existingUser
+    ? await prisma.user.update({
+        where: { id: existingUser.id },
+        data: userData,
+      })
+    : await prisma.user.create({ data: userData });
+
+  await deletePendingRegistration(normalizedEmail);
+  const safeUser = sanitizeUser(user);
+  const tokens = await createTokens(safeUser);
   return {
-    email: updatedUser.email,
-    emailVerified: updatedUser.emailVerified,
+    email: user.email,
+    emailVerified: user.emailVerified,
+    accessToken: tokens.accessToken,
+    refreshToken: tokens.refreshToken,
   };
 };
 
@@ -196,14 +185,19 @@ export const resendVerification = async (data: ResendVerificationInput) => {
       email: normalizedEmail,
     },
   });
+  const pendingRegistration = await getPendingRegistration(normalizedEmail);
+  const pendingForNewUser = Boolean(
+    pendingRegistration && (!user || user.deletedAt),
+  );
+  const existingUnverifiedLocalUser = Boolean(
+    user &&
+      !user.deletedAt &&
+      !user.emailVerified &&
+      user.authProvider === "LOCAL",
+  );
 
   // Privacy-preserving response: do not disclose whether email exists or account is verified
-  if (
-    !user ||
-    user.deletedAt ||
-    user.emailVerified ||
-    user.authProvider !== "LOCAL"
-  ) {
+  if (!pendingForNewUser && !existingUnverifiedLocalUser) {
     return null;
   }
 
@@ -218,6 +212,9 @@ export const resendVerification = async (data: ResendVerificationInput) => {
 
   // Generate new OTP, replace existing in Redis, reset attempts, set cooldown
   const otp = generateNumericOtp();
+  if (pendingRegistration) {
+    await storePendingRegistration(normalizedEmail, pendingRegistration);
+  }
   await storeEmailVerificationOtp(normalizedEmail, otp);
   await setResendCooldown(normalizedEmail);
 

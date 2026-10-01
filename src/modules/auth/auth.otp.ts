@@ -1,4 +1,5 @@
 import crypto from "node:crypto";
+import type { Role } from "../../generated/prisma/client";
 import { getRedisClient } from "../../lib/redis";
 import { AppError } from "../../utils/appError";
 import { hashToken } from "../../utils/token";
@@ -6,6 +7,16 @@ import { hashToken } from "../../utils/token";
 const OTP_TTL_SECONDS = 600; // 10 minutes
 const RESEND_COOLDOWN_SECONDS = 60; // 60 seconds
 const MAX_FAILED_ATTEMPTS = 5;
+
+export type PendingRegistration = {
+  name: string;
+  email: string;
+  passwordHash: string;
+  role: Role;
+};
+
+const getPendingRegistrationKey = (normalizedEmail: string): string =>
+  `auth:email-verification:pending:${normalizedEmail}`;
 
 const getOtpKey = (normalizedEmail: string): string =>
   `auth:email-verification:otp:${normalizedEmail}`;
@@ -15,6 +26,37 @@ const getAttemptsKey = (normalizedEmail: string): string =>
 
 const getResendKey = (normalizedEmail: string): string =>
   `auth:email-verification:resend:${normalizedEmail}`;
+
+export const storePendingRegistration = async (
+  normalizedEmail: string,
+  registration: PendingRegistration,
+): Promise<void> => {
+  const redis = await getRedisClient();
+  await redis.set(
+    getPendingRegistrationKey(normalizedEmail),
+    JSON.stringify(registration),
+    { EX: OTP_TTL_SECONDS },
+  );
+};
+
+export const getPendingRegistration = async (
+  normalizedEmail: string,
+): Promise<PendingRegistration | null> => {
+  const redis = await getRedisClient();
+  const registration = await redis.get(
+    getPendingRegistrationKey(normalizedEmail),
+  );
+  return registration
+    ? (JSON.parse(registration) as PendingRegistration)
+    : null;
+};
+
+export const deletePendingRegistration = async (
+  normalizedEmail: string,
+): Promise<void> => {
+  const redis = await getRedisClient();
+  await redis.del(getPendingRegistrationKey(normalizedEmail));
+};
 
 export const generateNumericOtp = (): string => {
   const otpNumber = crypto.randomInt(0, 1000000);

@@ -11,18 +11,15 @@ export const authenticate = async (
 ): Promise<void> => {
   try {
     const authHeader = req.headers.authorization;
-
-    if (!authHeader?.startsWith("Bearer ")) {
-      throw new AppError(
-        401,
-        "Authentication required. Please provide a Bearer token.",
-      );
-    }
-
-    const token = authHeader.substring(7).trim();
+    const token = authHeader?.startsWith("Bearer ")
+      ? authHeader.substring(7).trim()
+      : req.cookies?.accessToken;
 
     if (!token) {
-      throw new AppError(401, "Authentication token is missing.");
+      throw new AppError(
+        401,
+        "Authentication required. Please provide an access token.",
+      );
     }
 
     let payload: ReturnType<typeof verifyAccessToken>;

@@ -3,24 +3,20 @@ import { env } from "../config/env";
 import { mailConfig } from "../config/mail";
 import { AppError } from "../utils/appError";
 
-const transporter = nodemailer.createTransport({
-  host: mailConfig.host,
-  port: mailConfig.port,
-  secure: mailConfig.secure,
-  auth:
-    mailConfig.auth.user && mailConfig.auth.pass
-      ? {
-          user: mailConfig.auth.user,
-          pass: mailConfig.auth.pass,
-        }
-      : undefined,
+
+export const transporter = nodemailer.createTransport({
+  service: 'gmail', // or use custom host/port
+  auth: {
+    user: mailConfig.auth.user,
+    pass: mailConfig.auth.pass,
+  }
 });
 
 export const sendVerificationOtpEmail = async (
   to: string,
   otp: string,
 ): Promise<void> => {
-  if (!env.SMTP_HOST || !env.SMTP_USER) {
+  if (!env.SMTP_PASSWORD || !env.SMTP_USER) {
     console.error("Email service error: SMTP host or user is not configured.");
     throw new AppError(
       503,
