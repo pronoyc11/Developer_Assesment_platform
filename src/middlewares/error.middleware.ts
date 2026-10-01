@@ -6,6 +6,7 @@ import type {
 } from "express";
 
 import { Prisma } from "../../generated/prisma/client.js";
+import { env } from "../config/env.js";
 import { AppError } from "../utils/appError.js";
 import { sendError } from "../utils/response.js";
 
@@ -37,7 +38,12 @@ export const errorHandler: ErrorRequestHandler = (
   }
 
   if (error instanceof Error) {
-    sendError(res, error.message, [], 500);
+    sendError(
+      res,
+      env.NODE_ENV === "development" ? error.message : "Internal server error",
+      [],
+      500,
+    );
 
     return;
   }

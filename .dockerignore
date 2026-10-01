@@ -1,0 +1,11 @@
+.git
+node_modules
+dist
+.env
+.env.*
+!.env.example
+coverage
+npm-debug.log*
+Dockerfile*
+compose*.yml
+generated

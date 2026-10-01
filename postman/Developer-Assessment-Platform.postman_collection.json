@@ -1,0 +1,458 @@
+{
+  "info": {
+    "name": "Developer Assessment Platform - Auth and Phase 5",
+    "description": "Manual workflow collection for Phase 4 authentication and Phase 5 user/recruiter profiles, uploads, RBAC, and recruiter approval. Set unique candidateEmail and recruiterEmail values before each run. Run requests in order. Pause after each registration to read the emailed OTP and set candidateOtp or recruiterOtp. Provision an ADMIN account separately, then set adminEmail/adminPassword. Cloudinary must be configured for successful image uploads.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": { "type": "noauth" },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:5000/api/v1", "type": "string" },
+    { "key": "candidateName", "value": "Postman Candidate", "type": "string" },
+    { "key": "candidateEmail", "value": "candidate.postman@example.com", "type": "string" },
+    { "key": "candidateOriginalPassword", "value": "CandidatePass123!", "type": "string" },
+    { "key": "candidateNewPassword", "value": "CandidatePass456!", "type": "string" },
+    { "key": "candidatePassword", "value": "CandidatePass123!", "type": "string" },
+    { "key": "candidateOtp", "value": "ENTER_OTP_FROM_EMAIL", "type": "string" },
+    { "key": "candidateAccessToken", "value": "", "type": "string" },
+    { "key": "candidateRefreshToken", "value": "", "type": "string" },
+    { "key": "recruiterName", "value": "Postman Recruiter", "type": "string" },
+    { "key": "recruiterEmail", "value": "recruiter.postman@example.com", "type": "string" },
+    { "key": "recruiterPassword", "value": "RecruiterPass123!", "type": "string" },
+    { "key": "recruiterOtp", "value": "ENTER_OTP_FROM_EMAIL", "type": "string" },
+    { "key": "recruiterAccessToken", "value": "", "type": "string" },
+    { "key": "recruiterRefreshToken", "value": "", "type": "string" },
+    { "key": "adminEmail", "value": "", "type": "string" },
+    { "key": "adminPassword", "value": "", "type": "string" },
+    { "key": "adminToken", "value": "", "type": "string" },
+    { "key": "recruiterApplicationUserId", "value": "", "type": "string" },
+    { "key": "googleCredential", "value": "", "type": "string" },
+    { "key": "expiredAccessToken", "value": "", "type": "string" },
+    { "key": "deletedUserAccessToken", "value": "", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "01 - Candidate Auth and Profile",
+      "description": "Run in order. Registration sends an OTP email. Copy it into candidateOtp before running Verify Candidate Email.",
+      "item": [
+        {
+          "name": "API health",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/health" } },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('health responds successfully', function () { pm.response.to.have.status(200); });", "pm.test('standard success envelope', function () { pm.expect(pm.response.json().success).to.eql(true); });"] } }]
+        },
+        {
+          "name": "Register candidate",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"{{candidateName}}\",\n  \"email\": \"{{candidateEmail}}\",\n  \"password\": \"{{candidateOriginalPassword}}\",\n  \"role\": \"CANDIDATE\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{baseUrl}}/auth/register" }
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('candidate registration returns 201', function () { pm.response.to.have.status(201); });", "pm.test('registration is awaiting email verification', function () { const data = pm.response.json().data; pm.expect(data.email).to.eql(pm.collectionVariables.get('candidateEmail')); pm.expect(data.emailVerified).to.eql(false); });"] } }]
+        },
+        {
+          "name": "Verify candidate email - enter emailed OTP first",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"{{candidateEmail}}\",\n  \"otp\": \"{{candidateOtp}}\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{baseUrl}}/auth/verify-email" }
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('email verification succeeds', function () { pm.response.to.have.status(200); });", "const data = pm.response.json().data;", "pm.collectionVariables.set('candidateAccessToken', data.accessToken);", "pm.collectionVariables.set('candidateRefreshToken', data.refreshToken);", "pm.test('verified user and auth cookies are returned', function () { pm.expect(data.emailVerified).to.eql(true); const cookies = pm.response.headers.all().filter((h) => h.key.toLowerCase() === 'set-cookie').map((h) => h.value).join(';'); pm.expect(cookies).to.include('HttpOnly'); });"] } }]
+        },
+        {
+          "name": "Login candidate",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"{{candidateEmail}}\",\n  \"password\": \"{{candidatePassword}}\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{baseUrl}}/auth/login" }
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('login succeeds', function () { pm.response.to.have.status(200); });", "const data = pm.response.json().data;", "pm.collectionVariables.set('candidateAccessToken', data.accessToken);", "pm.collectionVariables.set('candidateRefreshToken', data.refreshToken);", "pm.test('login sets HTTP-only cookies', function () { const cookies = pm.response.headers.all().filter((h) => h.key.toLowerCase() === 'set-cookie').map((h) => h.value).join(';'); pm.expect(cookies).to.include('HttpOnly'); });"] } }]
+        },
+        {
+          "name": "Get authenticated identity",
+          "request": { "method": "GET", "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{candidateAccessToken}}", "type": "string" }] }, "url": { "raw": "{{baseUrl}}/auth-test/me" } },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('protected auth test route succeeds', function () { pm.response.to.have.status(200); });", "pm.test('authenticated identity is present', function () { pm.expect(pm.response.json().data.email).to.eql(pm.collectionVariables.get('candidateEmail')); });"] } }]
+        },
+        {
+          "name": "Get own candidate profile",
+          "request": { "method": "GET", "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{candidateAccessToken}}", "type": "string" }] }, "url": { "raw": "{{baseUrl}}/users/me" } },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('profile request succeeds', function () { pm.response.to.have.status(200); });", "const data = pm.response.json().data;", "pm.test('profile contains safe public fields only', function () { pm.expect(data.email).to.eql(pm.collectionVariables.get('candidateEmail')); pm.expect(data.role).to.eql('CANDIDATE'); pm.expect(data).not.to.have.property('passwordHash'); pm.expect(data).not.to.have.property('refreshTokens'); });"] } }]
+        },
+        {
+          "name": "Update candidate name and attempt protected-field changes",
+          "request": {
+            "method": "PATCH",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{candidateAccessToken}}", "type": "string" }] },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Updated Candidate\",\n  \"role\": \"ADMIN\",\n  \"status\": \"SUSPENDED\",\n  \"email\": \"someone-else@example.com\",\n  \"id\": \"00000000-0000-0000-0000-000000000000\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{baseUrl}}/users/me" }
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('profile update succeeds', function () { pm.response.to.have.status(200); });", "const data = pm.response.json().data;", "pm.test('only allowed profile field changes', function () { pm.expect(data.name).to.eql('Updated Candidate'); pm.expect(data.role).to.eql('CANDIDATE'); pm.expect(data.status).to.eql('ACTIVE'); pm.expect(data.email).to.eql(pm.collectionVariables.get('candidateEmail')); });"] } }]
+        },
+        {
+          "name": "Reject incorrect current password",
+          "request": {
+            "method": "PATCH",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{candidateAccessToken}}", "type": "string" }] },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"currentPassword\": \"WrongPassword123!\",\n  \"newPassword\": \"{{candidateNewPassword}}\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{baseUrl}}/users/me/password" }
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('wrong current password is rejected', function () { pm.response.to.have.status(400); });"] } }]
+        },
+        {
+          "name": "Change candidate password",
+          "request": {
+            "method": "PATCH",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{candidateAccessToken}}", "type": "string" }] },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"currentPassword\": \"{{candidatePassword}}\",\n  \"newPassword\": \"{{candidateNewPassword}}\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{baseUrl}}/users/me/password" }
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('password changes successfully', function () { pm.response.to.have.status(200); });", "pm.collectionVariables.set('candidatePassword', pm.collectionVariables.get('candidateNewPassword'));", "pm.test('password response contains no password data', function () { const text = pm.response.text(); pm.expect(text).not.to.include('passwordHash'); pm.expect(text).not.to.include('refreshToken'); });"] } }]
+        },
+        {
+          "name": "Old refresh token is revoked after password change",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"refreshToken\": \"{{candidateRefreshToken}}\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{baseUrl}}/auth/refresh" }
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('old refresh token is rejected', function () { pm.response.to.have.status(401); });"] } }]
+        },
+        {
+          "name": "Old password no longer works",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"{{candidateEmail}}\",\n  \"password\": \"{{candidateOriginalPassword}}\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{baseUrl}}/auth/login" }
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('old password is rejected', function () { pm.response.to.have.status(401); });"] } }]
+        },
+        {
+          "name": "Login with new candidate password",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"{{candidateEmail}}\",\n  \"password\": \"{{candidatePassword}}\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{baseUrl}}/auth/login" }
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('new password login succeeds', function () { pm.response.to.have.status(200); });", "const data = pm.response.json().data;", "pm.collectionVariables.set('candidateAccessToken', data.accessToken);", "pm.collectionVariables.set('candidateRefreshToken', data.refreshToken);"] } }]
+        },
+        {
+          "name": "Refresh candidate tokens",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"refreshToken\": \"{{candidateRefreshToken}}\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{baseUrl}}/auth/refresh" }
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('refresh succeeds', function () { pm.response.to.have.status(200); });", "const data = pm.response.json().data;", "pm.collectionVariables.set('candidateAccessToken', data.accessToken);", "pm.collectionVariables.set('candidateRefreshToken', data.refreshToken);"] } }]
+        },
+        {
+          "name": "Upload candidate avatar - select a real image file",
+          "request": {
+            "method": "PATCH",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{candidateAccessToken}}", "type": "string" }] },
+            "body": { "mode": "formdata", "formdata": [{ "key": "avatar", "type": "file", "src": [] }] },
+            "url": { "raw": "{{baseUrl}}/users/me/avatar" },
+            "description": "Before sending, select a real JPEG, PNG, or WebP file under 5 MB for form-data key avatar. Cloudinary must be configured."
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('avatar upload succeeds', function () { pm.response.to.have.status(200); });", "pm.test('profile has a Cloudinary avatar URL', function () { pm.expect(pm.response.json().data.avatarUrl).to.be.a('string').and.not.empty; });"] } }]
+        },
+        {
+          "name": "Reject missing avatar file",
+          "request": {
+            "method": "PATCH",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{candidateAccessToken}}", "type": "string" }] },
+            "body": { "mode": "formdata", "formdata": [{ "key": "avatar", "type": "file", "src": [] }] },
+            "url": { "raw": "{{baseUrl}}/users/me/avatar" },
+            "description": "Leave avatar unselected. Expect 400."
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('missing avatar is rejected', function () { pm.response.to.have.status(400); });"] } }]
+        },
+        {
+          "name": "Reject unsupported avatar MIME type",
+          "request": {
+            "method": "PATCH",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{candidateAccessToken}}", "type": "string" }] },
+            "body": { "mode": "formdata", "formdata": [{ "key": "avatar", "type": "file", "src": [], "contentType": "application/pdf" }] },
+            "url": { "raw": "{{baseUrl}}/users/me/avatar" },
+            "description": "Select a PDF or text file for avatar. Expect 400 and no Cloudinary/DB change."
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('unsupported avatar type is rejected', function () { pm.response.to.have.status(400); });"] } }]
+        },
+        {
+          "name": "Reject executable renamed as avatar image",
+          "request": {
+            "method": "PATCH",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{candidateAccessToken}}", "type": "string" }] },
+            "body": { "mode": "formdata", "formdata": [{ "key": "avatar", "type": "file", "src": [], "contentType": "image/jpeg" }] },
+            "url": { "raw": "{{baseUrl}}/users/me/avatar" },
+            "description": "Select a harmless non-image test file renamed with a .jpg extension and set its part MIME type to image/jpeg. Expect 400 from signature validation. Do not use a real executable."
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('spoofed image content is rejected', function () { pm.response.to.have.status(400); });"] } }]
+        },
+        {
+          "name": "Reject oversized avatar",
+          "request": {
+            "method": "PATCH",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{candidateAccessToken}}", "type": "string" }] },
+            "body": { "mode": "formdata", "formdata": [{ "key": "avatar", "type": "file", "src": [] }] },
+            "url": { "raw": "{{baseUrl}}/users/me/avatar" },
+            "description": "Select an image larger than 5 MB. Expect 413 and no Cloudinary/DB change."
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('oversized avatar is rejected with 413', function () { pm.response.to.have.status(413); });"] } }]
+        },
+        {
+          "name": "Candidate cannot access recruiter profile",
+          "request": { "method": "GET", "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{candidateAccessToken}}", "type": "string" }] }, "url": { "raw": "{{baseUrl}}/recruiters/me/profile" } },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('candidate is forbidden from recruiter endpoint', function () { pm.response.to.have.status(403); });"] } }]
+        },
+        {
+          "name": "Reject protected route without token",
+          "request": { "method": "GET", "auth": { "type": "noauth" }, "url": { "raw": "{{baseUrl}}/users/me" } },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('missing token returns 401', function () { pm.response.to.have.status(401); });"] } }]
+        },
+        {
+          "name": "Reject malformed bearer token",
+          "request": { "method": "GET", "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "not-a-valid-jwt", "type": "string" }] }, "url": { "raw": "{{baseUrl}}/users/me" } },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('malformed bearer token returns 401', function () { pm.response.to.have.status(401); });"] } }]
+        },
+        {
+          "name": "Logout candidate",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"refreshToken\": \"{{candidateRefreshToken}}\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{baseUrl}}/auth/logout" }
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('logout succeeds', function () { pm.response.to.have.status(200); });"] } }]
+        }
+      ]
+    },
+    {
+      "name": "02 - Recruiter Application and Admin Approval",
+      "description": "A public signup with role RECRUITER is still stored as role CANDIDATE with recruiterStatus PENDING. Verify it, log in an ADMIN, list applications, and approve by the returned UUID.",
+      "item": [
+        {
+          "name": "Register recruiter applicant",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"{{recruiterName}}\",\n  \"email\": \"{{recruiterEmail}}\",\n  \"password\": \"{{recruiterPassword}}\",\n  \"role\": \"RECRUITER\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{baseUrl}}/auth/register" }
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('recruiter application signup returns 201', function () { pm.response.to.have.status(201); });"] } }]
+        },
+        {
+          "name": "Verify recruiter applicant email - enter emailed OTP first",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"{{recruiterEmail}}\",\n  \"otp\": \"{{recruiterOtp}}\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{baseUrl}}/auth/verify-email" }
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('applicant email verifies', function () { pm.response.to.have.status(200); });", "const data = pm.response.json().data;", "pm.collectionVariables.set('recruiterAccessToken', data.accessToken);", "pm.collectionVariables.set('recruiterRefreshToken', data.refreshToken);", "pm.test('signup does not directly grant recruiter role', function () { pm.expect(data.recruiterStatus).to.eql('PENDING'); });"] } }]
+        },
+        {
+          "name": "Get applicant own profile before approval",
+          "request": { "method": "GET", "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{recruiterAccessToken}}", "type": "string" }] }, "url": { "raw": "{{baseUrl}}/users/me" } },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('applicant can authenticate as candidate', function () { pm.response.to.have.status(200); });", "pm.test('role remains candidate and approval is pending', function () { const data = pm.response.json().data; pm.expect(data.role).to.eql('CANDIDATE'); pm.expect(data.recruiterStatus).to.eql('PENDING'); });"] } }]
+        },
+        {
+          "name": "Applicant cannot access recruiter profile before approval",
+          "request": { "method": "GET", "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{recruiterAccessToken}}", "type": "string" }] }, "url": { "raw": "{{baseUrl}}/recruiters/me/profile" } },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('pending applicant is forbidden from recruiter route', function () { pm.response.to.have.status(403); });"] } }]
+        },
+        {
+          "name": "Login admin - provision account outside public registration",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"{{adminEmail}}\",\n  \"password\": \"{{adminPassword}}\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{baseUrl}}/auth/login" },
+            "description": "Requires a trusted ADMIN account provisioned manually for development. Do not create an admin through public registration."
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('admin login succeeds', function () { pm.response.to.have.status(200); });", "const data = pm.response.json().data;", "pm.collectionVariables.set('adminToken', data.accessToken);", "pm.test('logged-in account has ADMIN role', function () { pm.expect(data.user.role).to.eql('ADMIN'); });"] } }]
+        },
+        {
+          "name": "Reject pending application list without token",
+          "request": { "method": "GET", "auth": { "type": "noauth" }, "url": { "raw": "{{baseUrl}}/admin/recruiter-applications" } },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('unauthenticated admin request returns 401', function () { pm.response.to.have.status(401); });"] } }]
+        },
+        {
+          "name": "Reject application list for candidate",
+          "request": { "method": "GET", "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{candidateAccessToken}}", "type": "string" }] }, "url": { "raw": "{{baseUrl}}/admin/recruiter-applications" } },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('candidate is forbidden from admin endpoint', function () { pm.response.to.have.status(403); });"] } }]
+        },
+        {
+          "name": "List pending recruiter applications",
+          "request": { "method": "GET", "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] }, "url": { "raw": "{{baseUrl}}/admin/recruiter-applications?page=1&limit=10" } },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('admin can list pending applications', function () { pm.response.to.have.status(200); });", "const data = pm.response.json().data;", "const application = data.applications.find((item) => item.email === pm.collectionVariables.get('recruiterEmail'));", "pm.test('recruiter application appears as pending', function () { pm.expect(application).to.exist; pm.expect(application.role).to.eql('CANDIDATE'); pm.expect(application.recruiterStatus).to.eql('PENDING'); });", "if (application) pm.collectionVariables.set('recruiterApplicationUserId', application.id);"] } }]
+        },
+        {
+          "name": "Approve recruiter application",
+          "request": { "method": "PATCH", "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] }, "url": { "raw": "{{baseUrl}}/admin/recruiter-applications/{{recruiterApplicationUserId}}/approve" } },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('admin approval succeeds', function () { pm.response.to.have.status(200); });", "const data = pm.response.json().data;", "pm.test('approval grants role only after admin action', function () { pm.expect(data.role).to.eql('RECRUITER'); pm.expect(data.recruiterStatus).to.eql('APPROVED'); });"] } }]
+        },
+        {
+          "name": "Reject duplicate approval",
+          "request": { "method": "PATCH", "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] }, "url": { "raw": "{{baseUrl}}/admin/recruiter-applications/{{recruiterApplicationUserId}}/approve" } },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('already-approved application cannot be approved again', function () { pm.response.to.have.status(409); });"] } }]
+        },
+        {
+          "name": "Get recruiter profile after approval",
+          "request": { "method": "GET", "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{recruiterAccessToken}}", "type": "string" }] }, "url": { "raw": "{{baseUrl}}/recruiters/me/profile" } },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('approved recruiter can access profile', function () { pm.response.to.have.status(200); });", "pm.test('profile belongs to authenticated recruiter', function () { pm.expect(pm.response.json().data.userId).to.eql(pm.collectionVariables.get('recruiterApplicationUserId')); });"] } }]
+        },
+        {
+          "name": "Create or update recruiter company profile",
+          "request": {
+            "method": "PATCH",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{recruiterAccessToken}}", "type": "string" }] },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"companyName\": \"Postman Example Company\",\n  \"companyDescription\": \"Recruiter profile test record.\",\n  \"companyWebsite\": \"https://example.com\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{baseUrl}}/recruiters/me/profile" }
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('company profile upsert succeeds', function () { pm.response.to.have.status(200); });", "pm.test('company fields persist', function () { const data = pm.response.json().data; pm.expect(data.companyName).to.eql('Postman Example Company'); pm.expect(data.companyWebsite).to.eql('https://example.com'); });"] } }]
+        },
+        {
+          "name": "Reject invalid company website",
+          "request": {
+            "method": "PATCH",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{recruiterAccessToken}}", "type": "string" }] },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"companyWebsite\": \"not-a-valid-url\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{baseUrl}}/recruiters/me/profile" }
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('invalid website is rejected', function () { pm.response.to.have.status(400); });"] } }]
+        },
+        {
+          "name": "Upload company logo - select a real image file",
+          "request": {
+            "method": "PATCH",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{recruiterAccessToken}}", "type": "string" }] },
+            "body": { "mode": "formdata", "formdata": [{ "key": "logo", "type": "file", "src": [] }] },
+            "url": { "raw": "{{baseUrl}}/recruiters/me/profile/logo" },
+            "description": "Select a real JPEG, PNG, or WebP under 5 MB for form-data key logo. Cloudinary must be configured."
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('company logo upload succeeds', function () { pm.response.to.have.status(200); });", "pm.test('profile has a logo URL', function () { pm.expect(pm.response.json().data.companyLogoUrl).to.be.a('string').and.not.empty; });"] } }]
+        },
+        {
+          "name": "Reject unsupported company logo type",
+          "request": {
+            "method": "PATCH",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{recruiterAccessToken}}", "type": "string" }] },
+            "body": { "mode": "formdata", "formdata": [{ "key": "logo", "type": "file", "src": [], "contentType": "application/pdf" }] },
+            "url": { "raw": "{{baseUrl}}/recruiters/me/profile/logo" },
+            "description": "Select a PDF for logo. Expect 400 and existing logo URL unchanged."
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('unsupported logo type is rejected', function () { pm.response.to.have.status(400); });"] } }]
+        },
+        {
+          "name": "Reject oversized company logo",
+          "request": {
+            "method": "PATCH",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{recruiterAccessToken}}", "type": "string" }] },
+            "body": { "mode": "formdata", "formdata": [{ "key": "logo", "type": "file", "src": [] }] },
+            "url": { "raw": "{{baseUrl}}/recruiters/me/profile/logo" },
+            "description": "Select an image larger than 5 MB. Expect 413 and existing logo URL unchanged."
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('oversized logo is rejected with 413', function () { pm.response.to.have.status(413); });"] } }]
+        }
+      ]
+    },
+    {
+      "name": "03 - Manual Edge Cases and Replacement Uploads",
+      "description": "Use the same test accounts after the main folders. The expired-token and soft-delete checks require the documented local setup steps. Upload replacement requests require a different valid image file.",
+      "item": [
+        {
+          "name": "Reject invalid profile name",
+          "request": {
+            "method": "PATCH",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{candidateAccessToken}}", "type": "string" }] },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"x\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{baseUrl}}/users/me" }
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('too-short profile name returns 400', function () { pm.response.to.have.status(400); });"] } }]
+        },
+        {
+          "name": "Reject invalid new password length",
+          "request": {
+            "method": "PATCH",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{candidateAccessToken}}", "type": "string" }] },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"currentPassword\": \"{{candidatePassword}}\",\n  \"newPassword\": \"short\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{baseUrl}}/users/me/password" }
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('too-short new password returns 400', function () { pm.response.to.have.status(400); });"] } }]
+        },
+        {
+          "name": "Replace candidate avatar - choose a different image",
+          "request": {
+            "method": "PATCH",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{candidateAccessToken}}", "type": "string" }] },
+            "body": { "mode": "formdata", "formdata": [{ "key": "avatar", "type": "file", "src": [] }] },
+            "url": { "raw": "{{baseUrl}}/users/me/avatar" },
+            "description": "Select a different valid image than the first avatar upload. Expect a new URL; check Cloudinary for deletion of the prior public ID."
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('avatar replacement succeeds', function () { pm.response.to.have.status(200); });", "pm.test('new avatar URL is present', function () { pm.expect(pm.response.json().data.avatarUrl).to.be.a('string').and.not.empty; });"] } }]
+        },
+        {
+          "name": "Replace recruiter company logo - choose a different image",
+          "request": {
+            "method": "PATCH",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{recruiterAccessToken}}", "type": "string" }] },
+            "body": { "mode": "formdata", "formdata": [{ "key": "logo", "type": "file", "src": [] }] },
+            "url": { "raw": "{{baseUrl}}/recruiters/me/profile/logo" },
+            "description": "Select a different valid image than the first logo upload. Expect a new URL; check Cloudinary for deletion of the prior public ID."
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('logo replacement succeeds', function () { pm.response.to.have.status(200); });", "pm.test('new company logo URL is present', function () { pm.expect(pm.response.json().data.companyLogoUrl).to.be.a('string').and.not.empty; });"] } }]
+        },
+        {
+          "name": "Expired access token returns 401",
+          "request": { "method": "GET", "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{expiredAccessToken}}", "type": "string" }] }, "url": { "raw": "{{baseUrl}}/users/me" }, "description": "For a local test, temporarily set JWT_ACCESS_EXPIRES_IN=1s, restart, log in, copy candidateAccessToken into expiredAccessToken, wait 2 seconds, then send. Restore the normal expiry afterward." },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('expired access token returns 401', function () { pm.response.to.have.status(401); });"] } }]
+        },
+        {
+          "name": "Soft-deleted user token is rejected",
+          "request": { "method": "GET", "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{deletedUserAccessToken}}", "type": "string" }] }, "url": { "raw": "{{baseUrl}}/users/me" }, "description": "Copy a valid candidateAccessToken into deletedUserAccessToken. In Prisma Studio set that user's deletedAt to the current time, then send. Expect 401. Restore the test record afterward if needed." },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('soft-deleted user is rejected', function () { pm.response.to.have.status(401); });"] } }]
+        },
+        {
+          "name": "Cloudinary missing configuration returns controlled error",
+          "request": {
+            "method": "PATCH",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{candidateAccessToken}}", "type": "string" }] },
+            "body": { "mode": "formdata", "formdata": [{ "key": "avatar", "type": "file", "src": [] }] },
+            "url": { "raw": "{{baseUrl}}/users/me/avatar" },
+            "description": "Optional configuration test: temporarily blank Cloudinary env vars and restart, then attach a valid image. Expect 503, no secret details in the response, and the existing avatar URL unchanged. Restore configuration afterward."
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('missing Cloudinary configuration returns 503', function () { pm.response.to.have.status(503); });", "pm.test('response does not expose Cloudinary credentials', function () { const text = pm.response.text(); pm.expect(text).not.to.include('api_secret'); pm.expect(text).not.to.include('api_key'); });"] } }]
+        }
+      ]
+    },
+    {
+      "name": "04 - Optional Google Auth",
+      "description": "Only run when Google OAuth is configured. Set googleCredential to a valid Google ID token.",
+      "item": [
+        {
+          "name": "Google login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"credential\": \"{{googleCredential}}\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{baseUrl}}/auth/google" },
+            "description": "Skipped unless a valid Google ID token is configured. Expect 200 and auth cookies when enabled."
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Google auth succeeds when configured', function () { pm.response.to.have.status(200); });", "pm.test('Google login sets auth cookies', function () { const cookies = pm.response.headers.all().filter((h) => h.key.toLowerCase() === 'set-cookie').map((h) => h.value).join(';'); pm.expect(cookies).to.include('HttpOnly'); });"] } }]
+        }
+      ]
+    }
+  ]
+}

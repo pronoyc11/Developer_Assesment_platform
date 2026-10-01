@@ -27,6 +27,15 @@ export const UserStatus = {
 export type UserStatus = (typeof UserStatus)[keyof typeof UserStatus]
 
 
+export const RecruiterStatus = {
+  NOT_REQUESTED: 'NOT_REQUESTED',
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED'
+} as const
+
+export type RecruiterStatus = (typeof RecruiterStatus)[keyof typeof RecruiterStatus]
+
+
 export const QuestionType = {
   MCQ: 'MCQ',
   WRITTEN: 'WRITTEN'

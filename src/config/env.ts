@@ -31,13 +31,20 @@ export const env = {
 
   STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY ?? "",
   STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET ?? "",
+  ASSESSMENT_PUBLISH_FEE: Number(process.env.ASSESSMENT_PUBLISH_FEE ?? "1000"),
+  ASSESSMENT_PUBLISH_CURRENCY: process.env.ASSESSMENT_PUBLISH_CURRENCY ?? "usd",
 
   REDIS_USERNAME: process.env.REDIS_USERNAME!,
   REDIS_HOST: process.env.REDIS_HOST!,
   REDIS_PASSWORD: process.env.REDIS_PASSWORD!,
   REDIS_PORT: process.env.REDIS_PORT!,
+  REDIS_URL: process.env.REDIS_URL ?? "",
 
   FRONTEND_URL: process.env.FRONTEND_URL ?? "http://localhost:3000",
+
+  CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME ?? "",
+  CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY ?? "",
+  CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET ?? "",
 
   SMTP_HOST: process.env.SMTP_HOST ?? "",
   SMTP_PORT: Number(process.env.SMTP_PORT ?? 587),

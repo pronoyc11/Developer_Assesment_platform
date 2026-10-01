@@ -14,3 +14,4 @@ router.get("/me", authenticate, (req: Request, res: Response) => {
 });
 
 export const profileRouter = router;
+export default router;

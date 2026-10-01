@@ -10,6 +10,12 @@ enum UserStatus {
   SUSPENDED
 }
 
+enum RecruiterStatus {
+  NOT_REQUESTED
+  PENDING
+  APPROVED
+}
+
 enum QuestionType {
   MCQ
   WRITTEN

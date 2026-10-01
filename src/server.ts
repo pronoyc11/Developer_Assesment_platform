@@ -16,7 +16,7 @@ const startServer = async (): Promise<void> => {
     }
     try {
       await transporter.verify();
-      console.log("Nodemailer connected successfully.")
+      console.log("Nodemailer connected successfully.");
     } catch (nodemailerError) {
       console.error("Nodemailer connection error on startup:", nodemailerError);
     }

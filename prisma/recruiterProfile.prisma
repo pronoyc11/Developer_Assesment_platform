@@ -7,7 +7,8 @@ model RecruiterProfile {
   companyName        String? @db.VarChar(200)
   companyDescription String? @db.Text
   companyWebsite     String? @db.VarChar(500)
-  companyLogoUrl     String? @db.Text
+  companyLogoUrl      String? @db.Text
+  companyLogoPublicId String? @db.VarChar(255)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

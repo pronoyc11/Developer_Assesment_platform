@@ -4,8 +4,10 @@ model User {
   passwordHash    String?
   name            String     @db.VarChar(150)
   avatarUrl       String?    @db.Text
+  avatarPublicId  String?    @db.VarChar(255)
   role            Role       @default(CANDIDATE)
   status          UserStatus @default(ACTIVE)
+  recruiterStatus RecruiterStatus @default(NOT_REQUESTED)
   emailVerified   Boolean   @default(false)
   emailVerifiedAt DateTime?
 

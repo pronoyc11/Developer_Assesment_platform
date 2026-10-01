@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import { env } from "../../config";
+import { writeAuditEvent } from "../../lib/audit";
 import { AppError } from "../../utils/appError";
 import { catchAsync } from "../../utils/catchAsync";
 import { sendSuccess } from "../../utils/response";
@@ -60,6 +61,13 @@ export const resendVerification = catchAsync(
 export const login = catchAsync(async (req: Request, res: Response) => {
   const result = await authService.login(req.body);
 
+  await writeAuditEvent({
+    actorId: result.user.id,
+    action: "USER_LOGIN",
+    entity: "User",
+    entityId: result.user.id,
+    request: req,
+  });
   setAuthCookies(res, result);
   return sendSuccess(res, "Login successful", result, 200);
 });
@@ -67,6 +75,14 @@ export const login = catchAsync(async (req: Request, res: Response) => {
 export const googleLogin = catchAsync(async (req: Request, res: Response) => {
   const result = await authService.googleLogin(req.body);
 
+  await writeAuditEvent({
+    actorId: result.user.id,
+    action: "USER_LOGIN",
+    entity: "User",
+    entityId: result.user.id,
+    metadata: { provider: "GOOGLE" },
+    request: req,
+  });
   setAuthCookies(res, result);
   return sendSuccess(res, "Google authentication successful", result, 200);
 });
@@ -87,7 +103,14 @@ export const logout = catchAsync(async (req: Request, res: Response) => {
   if (!refreshToken) {
     throw new AppError(401, "Refresh token is required");
   }
-  await authService.logout(refreshToken);
+  const userId = await authService.logout(refreshToken);
+  await writeAuditEvent({
+    actorId: userId ?? req.user?.id ?? null,
+    action: "USER_LOGOUT",
+    entity: "User",
+    entityId: userId ?? req.user?.id ?? null,
+    request: req,
+  });
   res.clearCookie("accessToken", { path: "/" });
   res.clearCookie("refreshToken", { path: "/" });
 

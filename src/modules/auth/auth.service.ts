@@ -156,7 +156,11 @@ export const verifyEmail = async (data: VerifyEmailInput) => {
     deletedAt: null,
     emailVerified: true,
     emailVerifiedAt: new Date(),
-    role: registration.role,
+    role: "CANDIDATE" as const,
+    recruiterStatus:
+      registration.role === "RECRUITER"
+        ? ("PENDING" as const)
+        : ("NOT_REQUESTED" as const),
   };
 
   const user = existingUser
@@ -172,6 +176,7 @@ export const verifyEmail = async (data: VerifyEmailInput) => {
   return {
     email: user.email,
     emailVerified: user.emailVerified,
+    recruiterStatus: user.recruiterStatus,
     accessToken: tokens.accessToken,
     refreshToken: tokens.refreshToken,
   };
@@ -365,6 +370,10 @@ export const refreshAccessToken = async (refreshToken: string) => {
 
 export const logout = async (refreshToken: string) => {
   const tokenHash = hashToken(refreshToken);
+  const storedToken = await prisma.refreshToken.findUnique({
+    where: { tokenHash },
+    select: { userId: true },
+  });
 
   await prisma.refreshToken.updateMany({
     where: {
@@ -375,6 +384,7 @@ export const logout = async (refreshToken: string) => {
       revokedAt: new Date(),
     },
   });
+  return storedToken?.userId ?? null;
 };
 
 export const googleLogin = async (data: GoogleAuthInput) => {

@@ -31,6 +31,7 @@ export type RecruiterProfileMinAggregateOutputType = {
   companyDescription: string | null
   companyWebsite: string | null
   companyLogoUrl: string | null
+  companyLogoPublicId: string | null
   createdAt: Date | null
   updatedAt: Date | null
   deletedAt: Date | null
@@ -43,6 +44,7 @@ export type RecruiterProfileMaxAggregateOutputType = {
   companyDescription: string | null
   companyWebsite: string | null
   companyLogoUrl: string | null
+  companyLogoPublicId: string | null
   createdAt: Date | null
   updatedAt: Date | null
   deletedAt: Date | null
@@ -55,6 +57,7 @@ export type RecruiterProfileCountAggregateOutputType = {
   companyDescription: number
   companyWebsite: number
   companyLogoUrl: number
+  companyLogoPublicId: number
   createdAt: number
   updatedAt: number
   deletedAt: number
@@ -69,6 +72,7 @@ export type RecruiterProfileMinAggregateInputType = {
   companyDescription?: true
   companyWebsite?: true
   companyLogoUrl?: true
+  companyLogoPublicId?: true
   createdAt?: true
   updatedAt?: true
   deletedAt?: true
@@ -81,6 +85,7 @@ export type RecruiterProfileMaxAggregateInputType = {
   companyDescription?: true
   companyWebsite?: true
   companyLogoUrl?: true
+  companyLogoPublicId?: true
   createdAt?: true
   updatedAt?: true
   deletedAt?: true
@@ -93,6 +98,7 @@ export type RecruiterProfileCountAggregateInputType = {
   companyDescription?: true
   companyWebsite?: true
   companyLogoUrl?: true
+  companyLogoPublicId?: true
   createdAt?: true
   updatedAt?: true
   deletedAt?: true
@@ -178,6 +184,7 @@ export type RecruiterProfileGroupByOutputType = {
   companyDescription: string | null
   companyWebsite: string | null
   companyLogoUrl: string | null
+  companyLogoPublicId: string | null
   createdAt: Date
   updatedAt: Date
   deletedAt: Date | null
@@ -211,6 +218,7 @@ export type RecruiterProfileWhereInput = {
   companyDescription?: Prisma.StringNullableFilter<"RecruiterProfile"> | string | null
   companyWebsite?: Prisma.StringNullableFilter<"RecruiterProfile"> | string | null
   companyLogoUrl?: Prisma.StringNullableFilter<"RecruiterProfile"> | string | null
+  companyLogoPublicId?: Prisma.StringNullableFilter<"RecruiterProfile"> | string | null
   createdAt?: Prisma.DateTimeFilter<"RecruiterProfile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"RecruiterProfile"> | Date | string
   deletedAt?: Prisma.DateTimeNullableFilter<"RecruiterProfile"> | Date | string | null
@@ -224,6 +232,7 @@ export type RecruiterProfileOrderByWithRelationInput = {
   companyDescription?: Prisma.SortOrderInput | Prisma.SortOrder
   companyWebsite?: Prisma.SortOrderInput | Prisma.SortOrder
   companyLogoUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  companyLogoPublicId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -240,6 +249,7 @@ export type RecruiterProfileWhereUniqueInput = Prisma.AtLeast<{
   companyDescription?: Prisma.StringNullableFilter<"RecruiterProfile"> | string | null
   companyWebsite?: Prisma.StringNullableFilter<"RecruiterProfile"> | string | null
   companyLogoUrl?: Prisma.StringNullableFilter<"RecruiterProfile"> | string | null
+  companyLogoPublicId?: Prisma.StringNullableFilter<"RecruiterProfile"> | string | null
   createdAt?: Prisma.DateTimeFilter<"RecruiterProfile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"RecruiterProfile"> | Date | string
   deletedAt?: Prisma.DateTimeNullableFilter<"RecruiterProfile"> | Date | string | null
@@ -253,6 +263,7 @@ export type RecruiterProfileOrderByWithAggregationInput = {
   companyDescription?: Prisma.SortOrderInput | Prisma.SortOrder
   companyWebsite?: Prisma.SortOrderInput | Prisma.SortOrder
   companyLogoUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  companyLogoPublicId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -271,6 +282,7 @@ export type RecruiterProfileScalarWhereWithAggregatesInput = {
   companyDescription?: Prisma.StringNullableWithAggregatesFilter<"RecruiterProfile"> | string | null
   companyWebsite?: Prisma.StringNullableWithAggregatesFilter<"RecruiterProfile"> | string | null
   companyLogoUrl?: Prisma.StringNullableWithAggregatesFilter<"RecruiterProfile"> | string | null
+  companyLogoPublicId?: Prisma.StringNullableWithAggregatesFilter<"RecruiterProfile"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"RecruiterProfile"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"RecruiterProfile"> | Date | string
   deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"RecruiterProfile"> | Date | string | null
@@ -282,6 +294,7 @@ export type RecruiterProfileCreateInput = {
   companyDescription?: string | null
   companyWebsite?: string | null
   companyLogoUrl?: string | null
+  companyLogoPublicId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -295,6 +308,7 @@ export type RecruiterProfileUncheckedCreateInput = {
   companyDescription?: string | null
   companyWebsite?: string | null
   companyLogoUrl?: string | null
+  companyLogoPublicId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -306,6 +320,7 @@ export type RecruiterProfileUpdateInput = {
   companyDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLogoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyLogoPublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -319,6 +334,7 @@ export type RecruiterProfileUncheckedUpdateInput = {
   companyDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLogoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyLogoPublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -331,6 +347,7 @@ export type RecruiterProfileCreateManyInput = {
   companyDescription?: string | null
   companyWebsite?: string | null
   companyLogoUrl?: string | null
+  companyLogoPublicId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -342,6 +359,7 @@ export type RecruiterProfileUpdateManyMutationInput = {
   companyDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLogoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyLogoPublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -354,6 +372,7 @@ export type RecruiterProfileUncheckedUpdateManyInput = {
   companyDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLogoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyLogoPublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -366,6 +385,7 @@ export type RecruiterProfileCountOrderByAggregateInput = {
   companyDescription?: Prisma.SortOrder
   companyWebsite?: Prisma.SortOrder
   companyLogoUrl?: Prisma.SortOrder
+  companyLogoPublicId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
@@ -378,6 +398,7 @@ export type RecruiterProfileMaxOrderByAggregateInput = {
   companyDescription?: Prisma.SortOrder
   companyWebsite?: Prisma.SortOrder
   companyLogoUrl?: Prisma.SortOrder
+  companyLogoPublicId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
@@ -390,6 +411,7 @@ export type RecruiterProfileMinOrderByAggregateInput = {
   companyDescription?: Prisma.SortOrder
   companyWebsite?: Prisma.SortOrder
   companyLogoUrl?: Prisma.SortOrder
+  companyLogoPublicId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
@@ -438,6 +460,7 @@ export type RecruiterProfileCreateWithoutUserInput = {
   companyDescription?: string | null
   companyWebsite?: string | null
   companyLogoUrl?: string | null
+  companyLogoPublicId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -449,6 +472,7 @@ export type RecruiterProfileUncheckedCreateWithoutUserInput = {
   companyDescription?: string | null
   companyWebsite?: string | null
   companyLogoUrl?: string | null
+  companyLogoPublicId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -476,6 +500,7 @@ export type RecruiterProfileUpdateWithoutUserInput = {
   companyDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLogoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyLogoPublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -487,6 +512,7 @@ export type RecruiterProfileUncheckedUpdateWithoutUserInput = {
   companyDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLogoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyLogoPublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -501,6 +527,7 @@ export type RecruiterProfileSelect<ExtArgs extends runtime.Types.Extensions.Inte
   companyDescription?: boolean
   companyWebsite?: boolean
   companyLogoUrl?: boolean
+  companyLogoPublicId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   deletedAt?: boolean
@@ -514,6 +541,7 @@ export type RecruiterProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Ty
   companyDescription?: boolean
   companyWebsite?: boolean
   companyLogoUrl?: boolean
+  companyLogoPublicId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   deletedAt?: boolean
@@ -527,6 +555,7 @@ export type RecruiterProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Ty
   companyDescription?: boolean
   companyWebsite?: boolean
   companyLogoUrl?: boolean
+  companyLogoPublicId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   deletedAt?: boolean
@@ -540,12 +569,13 @@ export type RecruiterProfileSelectScalar = {
   companyDescription?: boolean
   companyWebsite?: boolean
   companyLogoUrl?: boolean
+  companyLogoPublicId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   deletedAt?: boolean
 }
 
-export type RecruiterProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "companyName" | "companyDescription" | "companyWebsite" | "companyLogoUrl" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["recruiterProfile"]>
+export type RecruiterProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "companyName" | "companyDescription" | "companyWebsite" | "companyLogoUrl" | "companyLogoPublicId" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["recruiterProfile"]>
 export type RecruiterProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -568,6 +598,7 @@ export type $RecruiterProfilePayload<ExtArgs extends runtime.Types.Extensions.In
     companyDescription: string | null
     companyWebsite: string | null
     companyLogoUrl: string | null
+    companyLogoPublicId: string | null
     createdAt: Date
     updatedAt: Date
     deletedAt: Date | null
@@ -1001,6 +1032,7 @@ export interface RecruiterProfileFieldRefs {
   readonly companyDescription: Prisma.FieldRef<"RecruiterProfile", 'String'>
   readonly companyWebsite: Prisma.FieldRef<"RecruiterProfile", 'String'>
   readonly companyLogoUrl: Prisma.FieldRef<"RecruiterProfile", 'String'>
+  readonly companyLogoPublicId: Prisma.FieldRef<"RecruiterProfile", 'String'>
   readonly createdAt: Prisma.FieldRef<"RecruiterProfile", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"RecruiterProfile", 'DateTime'>
   readonly deletedAt: Prisma.FieldRef<"RecruiterProfile", 'DateTime'>

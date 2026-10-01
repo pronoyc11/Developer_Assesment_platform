@@ -1498,6 +1498,7 @@ export const RecruiterProfileScalarFieldEnum = {
   companyDescription: 'companyDescription',
   companyWebsite: 'companyWebsite',
   companyLogoUrl: 'companyLogoUrl',
+  companyLogoPublicId: 'companyLogoPublicId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   deletedAt: 'deletedAt'
@@ -1537,8 +1538,10 @@ export const UserScalarFieldEnum = {
   passwordHash: 'passwordHash',
   name: 'name',
   avatarUrl: 'avatarUrl',
+  avatarPublicId: 'avatarPublicId',
   role: 'role',
   status: 'status',
+  recruiterStatus: 'recruiterStatus',
   emailVerified: 'emailVerified',
   emailVerifiedAt: 'emailVerifiedAt',
   authProvider: 'authProvider',
@@ -1776,6 +1779,20 @@ export type EnumUserStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$Prism
  * Reference to a field of type 'UserStatus[]'
  */
 export type ListEnumUserStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'RecruiterStatus'
+ */
+export type EnumRecruiterStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RecruiterStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'RecruiterStatus[]'
+ */
+export type ListEnumRecruiterStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RecruiterStatus[]'>
     
 
 

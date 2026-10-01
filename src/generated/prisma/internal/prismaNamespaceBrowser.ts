@@ -224,6 +224,7 @@ export const RecruiterProfileScalarFieldEnum = {
   companyDescription: 'companyDescription',
   companyWebsite: 'companyWebsite',
   companyLogoUrl: 'companyLogoUrl',
+  companyLogoPublicId: 'companyLogoPublicId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   deletedAt: 'deletedAt'
@@ -263,8 +264,10 @@ export const UserScalarFieldEnum = {
   passwordHash: 'passwordHash',
   name: 'name',
   avatarUrl: 'avatarUrl',
+  avatarPublicId: 'avatarPublicId',
   role: 'role',
   status: 'status',
+  recruiterStatus: 'recruiterStatus',
   emailVerified: 'emailVerified',
   emailVerifiedAt: 'emailVerifiedAt',
   authProvider: 'authProvider',

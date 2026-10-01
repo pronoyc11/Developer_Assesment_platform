@@ -3,14 +3,19 @@ import { env } from "../config/env";
 import { mailConfig } from "../config/mail";
 import { AppError } from "../utils/appError";
 
-
-export const transporter = nodemailer.createTransport({
-  service: 'gmail', // or use custom host/port
-  auth: {
-    user: mailConfig.auth.user,
-    pass: mailConfig.auth.pass,
-  }
-});
+export const transporter = nodemailer.createTransport(
+  mailConfig.host
+    ? {
+        host: mailConfig.host,
+        port: mailConfig.port,
+        secure: mailConfig.secure,
+        auth: mailConfig.auth,
+      }
+    : {
+        service: "gmail",
+        auth: mailConfig.auth,
+      },
+);
 
 export const sendVerificationOtpEmail = async (
   to: string,
@@ -69,5 +74,64 @@ export const sendVerificationOtpEmail = async (
       502,
       "Failed to deliver verification email. Your account was created, please request a new verification code.",
     );
+  }
+};
+
+const escapeHtml = (value: string): string =>
+  value.replace(/[&<>"']/g, (character) => {
+    const entities: Record<string, string> = {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;",
+    };
+    return entities[character] ?? character;
+  });
+
+export const sendAssessmentInvitationEmail = async (input: {
+  to: string;
+  assessmentTitle: string;
+  recruiterName: string;
+  companyName: string | null;
+  expiresAt: Date;
+  acceptanceUrl: string;
+}): Promise<void> => {
+  if (!env.SMTP_PASSWORD || !env.SMTP_USER) {
+    throw new AppError(503, "Email delivery service is currently unavailable.");
+  }
+
+  const organization = input.companyName || input.recruiterName;
+  const expiration = input.expiresAt.toISOString();
+  const subject = "You are invited to complete an assessment";
+  const text = [
+    `You have been invited to complete: ${input.assessmentTitle}`,
+    `Invitation from: ${organization}`,
+    `Accept your invitation: ${input.acceptanceUrl}`,
+    `This invitation expires at: ${expiration}`,
+    "You must sign in to the invited candidate account to accept.",
+  ].join("\n\n");
+  const html = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">
+      <h2>Assessment invitation</h2>
+      <p>${escapeHtml(input.recruiterName)}${input.companyName ? ` (${escapeHtml(input.companyName)})` : ""} invited you to complete:</p>
+      <h3>${escapeHtml(input.assessmentTitle)}</h3>
+      <p>This invitation expires at ${escapeHtml(expiration)}.</p>
+      <p><a href="${escapeHtml(input.acceptanceUrl)}">View and accept invitation</a></p>
+      <p>Sign in with the invited candidate account to accept.</p>
+    </div>
+  `;
+
+  try {
+    await transporter.sendMail({
+      from: mailConfig.from,
+      to: input.to,
+      subject,
+      text,
+      html,
+    });
+  } catch {
+    console.error("Assessment invitation email delivery failed.");
+    throw new AppError(502, "Failed to deliver the assessment invitation.");
   }
 };
