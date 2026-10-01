@@ -95,8 +95,21 @@ const candidateAttemptDto = (attempt: {
   status: attempt.status,
   startedAt: attempt.startedAt,
   deadline: deadlineFor(attempt.startedAt, attempt.assessment.durationMinutes),
+  remainingTimeSeconds: Math.max(
+    0,
+    Math.ceil(
+      ((deadlineFor(
+        attempt.startedAt,
+        attempt.assessment.durationMinutes,
+      )?.getTime() ?? Date.now()) -
+        Date.now()) /
+        1000,
+    ),
+  ),
   submittedAt: attempt.submittedAt,
   evaluatedAt: attempt.evaluatedAt,
+  totalScore: attempt.totalScore,
+  maxScore: attempt.maxScore,
   assessment: {
     title: attempt.assessment.title,
     description: attempt.assessment.description,
@@ -406,6 +419,11 @@ export const listAssessmentSubmissions = async (
         attempt: {
           select: {
             id: true,
+            status: true,
+            totalScore: true,
+            maxScore: true,
+            submittedAt: true,
+            evaluatedAt: true,
             candidate: { select: { id: true, name: true, email: true } },
           },
         },

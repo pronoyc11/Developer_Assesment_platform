@@ -3,7 +3,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 COPY . .
-RUN npm run prisma:generate && npm run build
+RUN npm run build
 
 FROM node:22-alpine AS runtime
 ENV NODE_ENV=production

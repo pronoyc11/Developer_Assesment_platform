@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import test from "node:test";
 
 import {
@@ -19,7 +20,13 @@ import {
   evaluateSubmissionSchema,
   submitAnswersSchema,
 } from "../src/modules/attempts/attempt.validation.ts";
-import { openApiSpec } from "../src/docs/openapi.ts";
+
+const collection = JSON.parse(
+  readFileSync(
+    new URL("../postman/Developer-Assessment-Platform.postman_collection.json", import.meta.url),
+    "utf8",
+  ),
+);
 
 const itemOne = "11111111-1111-4111-8111-111111111111";
 const itemTwo = "22222222-2222-4222-8222-222222222222";
@@ -147,11 +154,13 @@ test("written evaluation score is a nonnegative integer", () => {
   assert.equal(evaluateSubmissionSchema.safeParse({ score: 3, extra: true }).success, false);
 });
 
-test("OpenAPI describes core phase workflows and webhook", () => {
-  assert.equal(openApiSpec.openapi, "3.1.0");
-  assert.ok(openApiSpec.paths["/assessments/{assessmentId}/payment"]);
-  assert.ok(openApiSpec.paths["/invitations/{token}/start"]);
-  assert.ok(openApiSpec.paths["/attempts/{id}/submit"]);
-  assert.ok(openApiSpec.paths["/payments/stripe/webhook"]);
-  assert.ok(openApiSpec.paths["/admin/audit-logs"]);
+test("Postman collection has exactly one variable and no other placeholders", () => {
+  assert.deepEqual(
+    collection.variable.map((variable) => variable.key),
+    ["baseUrl"],
+  );
+  const placeholders = [...JSON.stringify(collection).matchAll(/\{\{([^}]+)\}\}/g)]
+    .map((match) => match[1]);
+  assert.ok(placeholders.length > 0);
+  assert.ok(placeholders.every((placeholder) => placeholder === "baseUrl"));
 });
