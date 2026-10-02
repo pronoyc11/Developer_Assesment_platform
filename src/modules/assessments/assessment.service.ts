@@ -21,6 +21,7 @@ const assessmentSummarySelect = {
   createdAt: true,
   updatedAt: true,
   _count: { select: { items: true } },
+  
 } satisfies Prisma.AssessmentSelect;
 
 const assessmentDetailSelect = {
@@ -143,6 +144,7 @@ export const listAssessments = async (
     prisma.assessment.findMany({
       where,
       select: assessmentSummarySelect,
+    
       orderBy: orderByFor(query.sortBy, query.sortOrder),
       skip,
       take: limit,

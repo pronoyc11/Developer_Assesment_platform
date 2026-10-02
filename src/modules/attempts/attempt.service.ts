@@ -103,7 +103,7 @@ const candidateAttemptDto = (attempt: {
         attempt.assessment.durationMinutes,
       )?.getTime() ?? Date.now()) -
         Date.now()) /
-        1000,
+      1000,
     ),
   ),
   submittedAt: attempt.submittedAt,
@@ -322,6 +322,7 @@ export const submitAttempt = async (
           attempt.startedAt,
           attempt.assessment.durationMinutes,
         );
+        console.log(attempt.assessment.durationMinutes);
         if (!deadline || deadline <= now) {
           throw new AppError(410, "Attempt time limit has expired.");
         }
