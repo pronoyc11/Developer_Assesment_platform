@@ -47,6 +47,14 @@ const listSubmissionsQuerySchema = z.object({
     .optional(),
 });
 
+const listCandidateAttemptsQuerySchema = z.object({
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(100).default(10),
+  status: z
+    .enum(["NOT_STARTED", "IN_PROGRESS", "SUBMITTED", "EVALUATED"])
+    .optional(),
+});
+
 const submissionIdParamsSchema = z.object({
   submissionId: z.string().uuid("Submission ID must be a valid UUID"),
 });
@@ -62,11 +70,15 @@ export {
   attemptIdParamsSchema,
   evaluateSubmissionSchema,
   invitationTokenParamsSchema,
+  listCandidateAttemptsQuerySchema,
   listSubmissionsQuerySchema,
   submissionIdParamsSchema,
   submitAnswersSchema,
 };
 
 export type EvaluateSubmissionInput = z.infer<typeof evaluateSubmissionSchema>;
+export type ListCandidateAttemptsQuery = z.infer<
+  typeof listCandidateAttemptsQuerySchema
+>;
 export type ListSubmissionsQuery = z.infer<typeof listSubmissionsQuerySchema>;
 export type SubmitAnswersInput = z.infer<typeof submitAnswersSchema>;

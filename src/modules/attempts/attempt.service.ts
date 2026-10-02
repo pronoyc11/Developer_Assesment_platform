@@ -10,6 +10,7 @@ import { getPagination, getPaginationMeta } from "../../utils/pagination";
 import { hashToken } from "../../utils/token";
 import type {
   EvaluateSubmissionInput,
+  ListCandidateAttemptsQuery,
   ListSubmissionsQuery,
   SubmitAnswersInput,
 } from "./attempt.validation";
@@ -147,6 +148,81 @@ const candidateAttemptDto = (attempt: {
     },
   }),
 });
+
+export const listCandidateAttempts = async (
+  candidateId: string,
+  query: ListCandidateAttemptsQuery,
+) => {
+  const { page, limit, skip } = getPagination(query);
+  const where: Prisma.AttemptWhereInput = {
+    candidateId,
+    ...(query.status && { status: query.status }),
+  };
+
+  const [attempts, total] = await prisma.$transaction([
+    prisma.attempt.findMany({
+      where,
+      orderBy: { createdAt: "desc" },
+      skip,
+      take: limit,
+      select: {
+        id: true,
+        assessmentId: true,
+        status: true,
+        startedAt: true,
+        submittedAt: true,
+        evaluatedAt: true,
+        totalScore: true,
+        maxScore: true,
+        assessment: {
+          select: {
+            title: true,
+            description: true,
+            durationMinutes: true,
+            passingScore: true,
+          },
+        },
+      },
+    }),
+    prisma.attempt.count({ where }),
+  ]);
+
+  return {
+    attempts: attempts.map((attempt) => ({
+      id: attempt.id,
+      assessmentId: attempt.assessmentId,
+      status: attempt.status,
+      startedAt: attempt.startedAt,
+      deadline: deadlineFor(
+        attempt.startedAt,
+        attempt.assessment.durationMinutes,
+      ),
+      submittedAt: attempt.submittedAt,
+      evaluatedAt: attempt.evaluatedAt,
+      totalScore: attempt.totalScore,
+      maxScore: attempt.maxScore,
+      assessment: attempt.assessment,
+      ...(attempt.status === "EVALUATED" && {
+        result: {
+          totalScore: attempt.totalScore,
+          maxScore: attempt.maxScore,
+          percentage:
+            attempt.maxScore === 0
+              ? 0
+              : Math.round((attempt.totalScore / attempt.maxScore) * 10000) /
+                100,
+          passingScore: attempt.assessment.passingScore,
+          passed:
+            (attempt.maxScore === 0
+              ? 0
+              : (attempt.totalScore / attempt.maxScore) * 100) >=
+            attempt.assessment.passingScore,
+        },
+      }),
+    })),
+    pagination: getPaginationMeta(page, limit, total),
+  };
+};
 
 const throwAttemptConflict = (error: unknown, message: string): never => {
   if (

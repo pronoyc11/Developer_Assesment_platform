@@ -22,6 +22,23 @@ export const startAttempt = catchAsync(async (req: Request, res: Response) => {
   return sendSuccess(res, "Assessment attempt started.", attempt, 201);
 });
 
+export const listCandidateAttempts = catchAsync(
+  async (req: Request, res: Response) => {
+    const attempts = await attemptService.listCandidateAttempts(
+      getCandidateId(req),
+      req.query as unknown as Parameters<
+        typeof attemptService.listCandidateAttempts
+      >[1],
+    );
+    return sendSuccess(
+      res,
+      "Candidate attempts retrieved successfully.",
+      attempts,
+      200,
+    );
+  },
+);
+
 export const getAttempt = catchAsync(async (req: Request, res: Response) => {
   const attemptId = req.params.id;
   if (!attemptId || Array.isArray(attemptId)) {
