@@ -6,15 +6,24 @@ import {
   acceptInvitation,
   deleteInvitation,
   getInvitation,
+  listCandidateInvitations,
   startAttempt,
 } from "./invitation.controller";
 import {
   invitationIdParamsSchema,
   invitationTokenParamsSchema,
+  listCandidateInvitationsQuerySchema,
 } from "./invitation.validation";
 
 const router = Router();
 
+router.get(
+  "/candidate-invitations",
+  authenticate,
+  requireRoles("CANDIDATE"),
+  validate(listCandidateInvitationsQuerySchema, "query"),
+  listCandidateInvitations,
+);
 router.get(
   "/:id",
   authenticate,

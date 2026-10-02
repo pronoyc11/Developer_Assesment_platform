@@ -31,6 +31,23 @@ export const getInvitation = catchAsync(async (req: Request, res: Response) => {
   );
 });
 
+export const listCandidateInvitations = catchAsync(
+  async (req: Request, res: Response) => {
+    const invitations = await invitationService.listCandidateInvitations(
+      getUserId(req),
+      req.query as unknown as Parameters<
+        typeof invitationService.listCandidateInvitations
+      >[1],
+    );
+    return sendSuccess(
+      res,
+      "Candidate invitations retrieved successfully.",
+      invitations,
+      200,
+    );
+  },
+);
+
 export const acceptInvitation = catchAsync(
   async (req: Request, res: Response) => {
 

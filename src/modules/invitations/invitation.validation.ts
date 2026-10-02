@@ -21,6 +21,12 @@ export const listInvitationsQuerySchema = z.object({
   sortOrder: z.enum(["asc", "desc"]).default("desc"),
 });
 
+export const listCandidateInvitationsQuerySchema = z.object({
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(100).default(10),
+  status: z.enum(["PENDING", "ACCEPTED", "USED"]).optional(),
+});
+
 export const invitationIdParamsSchema = z.object({
   id: z.string().uuid("Invitation ID must be a valid UUID"),
 });
@@ -31,3 +37,6 @@ export const invitationTokenParamsSchema = z.object({
 
 export type CreateInvitationInput = z.infer<typeof createInvitationSchema>;
 export type ListInvitationsQuery = z.infer<typeof listInvitationsQuerySchema>;
+export type ListCandidateInvitationsQuery = z.infer<
+  typeof listCandidateInvitationsQuerySchema
+>;

@@ -8,6 +8,7 @@ import { getPagination, getPaginationMeta } from "../../utils/pagination";
 import { hashToken } from "../../utils/token";
 import type {
   CreateInvitationInput,
+  ListCandidateInvitationsQuery,
   ListInvitationsQuery,
 } from "./invitation.validation";
 
@@ -251,6 +252,53 @@ export const listAssessmentInvitations = async (
       select: {
         ...invitationPublicSelect,
         candidate: { select: { name: true } },
+      },
+    }),
+    prisma.invitation.count({ where }),
+  ]);
+
+  return {
+    invitations,
+    pagination: getPaginationMeta(page, limit, total),
+  };
+};
+
+export const listCandidateInvitations = async (
+  candidateId: string,
+  query: ListCandidateInvitationsQuery,
+) => {
+  const { page, limit, skip } = getPagination(query);
+  const where: Prisma.InvitationWhereInput = {
+    candidateId,
+    deletedAt: null,
+    assessment: { is: { deletedAt: null } },
+    ...(query.status && { status: query.status }),
+  };
+
+  const [invitations, total] = await prisma.$transaction([
+    prisma.invitation.findMany({
+      where,
+      orderBy: { createdAt: "desc" },
+      skip,
+      take: limit,
+      select: {
+        ...invitationPublicSelect,
+        assessment: {
+          select: {
+            title: true,
+            description: true,
+            durationMinutes: true,
+            passingScore: true,
+            status: true,
+            closedAt: true,
+            recruiter: {
+              select: {
+                name: true,
+                recruiterProfile: { select: { companyName: true } },
+              },
+            },
+          },
+        },
       },
     }),
     prisma.invitation.count({ where }),
