@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
-import type { Role } from "../generated/prisma/client";
+import { RecruiterStatus, type Role } from "../generated/prisma/client";
 import { AppError } from "../utils/appError";
 
 export const requireRoles = (...allowedRoles: Role[]) => {
@@ -14,6 +14,11 @@ export const requireRoles = (...allowedRoles: Role[]) => {
       return;
     }
 
+    if (allowedRoles.includes("RECRUITER") && req.user.role === "RECRUITER") {
+      if (req.user.recruiterStatus !== RecruiterStatus.APPROVED) {
+        throw new AppError(403, "Recruiter profile is not approved yet.");
+      }
+    }
     if (!allowedRoles.includes(req.user.role)) {
       next(
         new AppError(
@@ -21,6 +26,7 @@ export const requireRoles = (...allowedRoles: Role[]) => {
           "You do not have permission to access this resource.",
         ),
       );
+
       return;
     }
 

@@ -41,6 +41,7 @@ export const authenticate = async (
         status: true,
         deletedAt: true,
         emailVerified: true,
+        recruiterStatus: true
       },
     });
 
@@ -61,6 +62,7 @@ export const authenticate = async (
       name: user.name,
       role: user.role,
       emailVerified: user.emailVerified,
+      recruiterStatus: user.recruiterStatus
     };
 
     next();

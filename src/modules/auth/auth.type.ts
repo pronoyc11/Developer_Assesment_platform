@@ -1,4 +1,4 @@
-import type { Role } from "../../generated/prisma/client";
+import type { RecruiterStatus, Role } from "../../generated/prisma/client";
 
 export type AuthenticatedUser = {
   id: string;
@@ -6,6 +6,7 @@ export type AuthenticatedUser = {
   name: string;
   role: Role;
   emailVerified: boolean;
+  recruiterStatus: RecruiterStatus
 };
 
 export type AuthTokens = {
