@@ -1,5 +1,7 @@
 # Developer Assessment Platform
 
+API_DOCUMENTATION_POSTMAN : https://documenter.getpostman.com/view/29611624/2sBYHNX3UK
+
 ## Purpose
 
 Developer Assessment Platform is a backend for recruiters to build technical assessments and evaluate candidate submissions. It manages identities, recruiter approval, profiles and company assets, reusable problems, assessment snapshots, paid publication, candidate invitations, timed attempts, automatic MCQ scoring, manual written evaluation, admin user controls, and audit history.
