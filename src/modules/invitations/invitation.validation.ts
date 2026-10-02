@@ -2,7 +2,7 @@ import { z } from "zod";
 
 const invitationTokenSchema = z
   .string()
-  .regex(/^[A-Za-z0-9_-]{43}$/, "Invitation token is invalid");
+  // .regex(/^[A-Za-z0-9_-]{43}$/, "Invitation token is invalid");
 
 export const createInvitationSchema = z
   .object({

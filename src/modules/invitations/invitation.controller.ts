@@ -33,10 +33,13 @@ export const getInvitation = catchAsync(async (req: Request, res: Response) => {
 
 export const acceptInvitation = catchAsync(
   async (req: Request, res: Response) => {
+
+    // console.log("Invitation");
     const token = req.params.token;
     if (!token || Array.isArray(token)) {
       throw new AppError(400, "Invitation token is required.");
     }
+    // console.log(token,"Hello");
     const invitation = await invitationService.acceptInvitation(
       getUserId(req),
       token,

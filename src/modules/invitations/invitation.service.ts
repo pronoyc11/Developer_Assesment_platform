@@ -290,7 +290,8 @@ export const acceptInvitation = async (
   candidateId: string,
   rawToken: string,
 ) => {
-  const token = hashToken(rawToken);
+  // const token = hashToken(rawToken);
+  const token = rawToken;
   const now = new Date();
 
   return prisma
