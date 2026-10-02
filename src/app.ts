@@ -1,5 +1,5 @@
 import cookieParser from "cookie-parser";
-import express from "express";
+import express, { Request, Response } from "express";
 import router from "./app/routes";
 import { configureSecurity } from "./app/security";
 import { errorHandler } from "./middlewares/error.middleware";
@@ -8,6 +8,9 @@ import { stripeWebhook } from "./modules/payments/payment.controller";
 
 const app = express();
 
+app.get("/", (req: Request, res: Response) => {
+  res.status(200).send("Working fine");
+})
 configureSecurity(app);
 
 app.use(cookieParser());
