@@ -1,10 +1,16 @@
 {
-  "version": 2,
-  "buildCommand": "npx prisma generate",
-  "builds": [
-    { "src": "src/server.ts", "use": "@vercel/node" }
-  ],
-  "routes": [
-    { "src": "/(.*)", "dest": "src/server.ts" }
-  ]
-}   
+    "version": 2,
+    "buildCommand": "npm run build && npx prisma generate",
+    "builds": [
+        {
+            "src": "src/server.ts",
+            "use": "@vercel/node"
+        }
+    ],
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "src/server.ts"
+        }
+    ]
+}
