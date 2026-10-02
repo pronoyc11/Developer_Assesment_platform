@@ -33,7 +33,7 @@ export const register = catchAsync(async (req: Request, res: Response) => {
 
   return sendSuccess(
     res,
-    "Registration successful. Please check your email for the verification OTP.",
+    result.message,
     result,
     201,
   );

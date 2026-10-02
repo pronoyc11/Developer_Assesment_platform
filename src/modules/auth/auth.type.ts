@@ -6,7 +6,7 @@ export type AuthenticatedUser = {
   name: string;
   role: Role;
   emailVerified: boolean;
-  recruiterStatus: RecruiterStatus
+  recruiterStatus?: RecruiterStatus
 };
 
 export type AuthTokens = {

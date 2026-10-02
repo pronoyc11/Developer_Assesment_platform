@@ -44,7 +44,7 @@ export const sanitizeUser = (user: {
   email: user.email,
   name: user.name,
   role: user.role,
-  emailVerified: user.emailVerified,
+  emailVerified: user.emailVerified
 });
 
 const createTokens = async (user: AuthenticatedUser): Promise<AuthTokens> => {
@@ -82,7 +82,11 @@ const createTokens = async (user: AuthenticatedUser): Promise<AuthTokens> => {
 
 export const register = async (data: RegisterInput) => {
   const normalizedEmail = data.email.trim().toLowerCase();
+  let message = "Registration successful. Please check your email for the verification OTP.";
 
+  if (data.role === 'RECRUITER') {
+    message = "You applied as a recruiter.Please check your email for the verification OTP. After verification an ADMIN will review your application.";
+  }
   const existingUser = await prisma.user.findUnique({
     where: {
       email: normalizedEmail,
@@ -124,6 +128,7 @@ export const register = async (data: RegisterInput) => {
   return {
     email: normalizedEmail,
     emailVerified: false,
+    message
   };
 };
 
@@ -165,9 +170,9 @@ export const verifyEmail = async (data: VerifyEmailInput) => {
 
   const user = existingUser
     ? await prisma.user.update({
-        where: { id: existingUser.id },
-        data: userData,
-      })
+      where: { id: existingUser.id },
+      data: userData,
+    })
     : await prisma.user.create({ data: userData });
 
   await deletePendingRegistration(normalizedEmail);
@@ -196,9 +201,9 @@ export const resendVerification = async (data: ResendVerificationInput) => {
   );
   const existingUnverifiedLocalUser = Boolean(
     user &&
-      !user.deletedAt &&
-      !user.emailVerified &&
-      user.authProvider === "LOCAL",
+    !user.deletedAt &&
+    !user.emailVerified &&
+    user.authProvider === "LOCAL",
   );
 
   // Privacy-preserving response: do not disclose whether email exists or account is verified

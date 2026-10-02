@@ -129,9 +129,9 @@ export const createInvitation = async (
         });
         const canReuse = Boolean(
           existing &&
-            existing.status === "PENDING" &&
-            (existing.deletedAt ||
-              (existing.expiresAt && existing.expiresAt <= now)),
+          existing.status === "PENDING" &&
+          (existing.deletedAt ||
+            (existing.expiresAt && existing.expiresAt <= now)),
         );
         if (existing && !canReuse) {
           throw new AppError(
@@ -151,18 +151,18 @@ export const createInvitation = async (
         };
         const createdInvitation = existing
           ? await transaction.invitation.update({
-              where: { id: existing.id },
-              data: inviteData,
-              select: invitationPublicSelect,
-            })
+            where: { id: existing.id },
+            data: inviteData,
+            select: invitationPublicSelect,
+          })
           : await transaction.invitation.create({
-              data: {
-                assessmentId,
-                candidateId: candidate.id,
-                ...inviteData,
-              },
-              select: invitationPublicSelect,
-            });
+            data: {
+              assessmentId,
+              candidateId: candidate.id,
+              ...inviteData,
+            },
+            select: invitationPublicSelect,
+          });
 
         return {
           invitation: createdInvitation,
@@ -278,6 +278,7 @@ export const getInvitation = async (userId: string, invitationId: string) => {
       assessment: {
         select: { title: true, status: true, durationMinutes: true },
       },
+      token: true
     },
   });
   if (!invitation) {
