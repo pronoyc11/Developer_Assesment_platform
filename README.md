@@ -2,6 +2,8 @@
 
 Developer Assessment Platform (DAP) is a role-based REST API for creating, publishing, delivering, and evaluating technical assessments. Recruiters manage problem banks and assessments, candidates receive invitations and complete assessments, and administrators manage users, recruiter applications, and audit records.
 
+Live URL : https://dap-nine.vercel.app/
+
 The API is implemented with Node.js, TypeScript, Express, Prisma ORM, and PostgreSQL. Redis is used for supporting infrastructure, while Nodemailer, Cloudinary, Google OAuth, and Stripe provide optional integrations.
 
 ## Contents
@@ -17,6 +19,7 @@ The API is implemented with Node.js, TypeScript, Express, Prisma ORM, and Postgr
 - [API reference](#api-reference)
 - [Typical workflows](#typical-workflows)
 - [Database and Prisma](#database-and-prisma)
+- [Database seeding](#database-seeding)
 - [Testing and quality checks](#testing-and-quality-checks)
 - [Postman](#postman)
 - [Deployment](#deployment)
@@ -543,6 +546,32 @@ npm run seed
 ```
 
 Use `prisma migrate dev` only for development. Production deployments should apply reviewed migrations with `prisma migrate deploy`.
+
+## Database seeding
+
+The idempotent seed script is located at `src/app/seed.ts` and is run with:
+
+```bash
+npm run seed
+```
+
+Run migrations first so the database schema exists. The seed creates or updates the following development records:
+
+- A verified `ADMIN` account
+- A verified and approved `RECRUITER` account with a recruiter profile
+- A verified `CANDIDATE` account
+- Two recruiter problems: one MCQ and one written problem
+- One draft assessment containing both problems as assessment items
+
+Default local credentials are:
+
+| Account | Email | Password |
+|---|---|---|
+| Admin | `admin@example.com` | `AdminPass123!` |
+| Recruiter | `recruiter@example.com` | `RecruiterPass123!` |
+| Candidate | `candidate@example.com` | `CandidatePass123!` |
+
+For safer or customized local values, set these variables in `.env` before running the seed: `SEED_ADMIN_EMAIL`, `SEED_ADMIN_PASSWORD`, `SEED_RECRUITER_EMAIL`, `SEED_RECRUITER_PASSWORD`, `SEED_CANDIDATE_EMAIL`, and `SEED_CANDIDATE_PASSWORD`. The script uses stable IDs and upserts, so it can be safely run repeatedly. These credentials are for development only and must be changed before using a non-local database.
 
 ## Testing and quality checks
 
