@@ -158,6 +158,7 @@ export const listCandidateAttempts = async (
   const where: Prisma.AttemptWhereInput = {
     candidateId,
     ...(query.status && { status: query.status }),
+    ...(query.search && { assessment: { is: { title: { contains: query.search, mode: "insensitive" } } } }),
   };
 
   const [attempts, total] = await prisma.$transaction([
