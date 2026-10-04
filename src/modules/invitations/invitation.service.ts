@@ -444,6 +444,19 @@ export const acceptInvitation = async (
     });
 };
 
+export const acceptInvitationById = async (candidateId: string, invitationId: string) => {
+  const rawToken = crypto.randomBytes(32).toString("base64url");
+  const now = new Date();
+  const invitation = await prisma.invitation.findFirst({ where: { id: invitationId, candidateId, deletedAt: null }, select: { id: true, status: true, expiresAt: true, assessment: { select: { title: true, status: true, closedAt: true, deletedAt: true } } } });
+  if (!invitation) throw new AppError(404, "Invitation not found.");
+  if (invitation.status !== "PENDING") throw new AppError(409, "Invitation is no longer pending.");
+  if (!invitation.expiresAt || invitation.expiresAt <= now) throw new AppError(410, "Invitation has expired.");
+  if (invitation.assessment.deletedAt || invitation.assessment.status !== "PUBLISHED" || invitation.assessment.closedAt) throw new AppError(409, "This assessment is no longer accepting invitations.");
+  const changed = await prisma.invitation.updateMany({ where: { id: invitationId, candidateId, status: "PENDING", deletedAt: null, expiresAt: { gt: now } }, data: { token: hashToken(rawToken), status: "ACCEPTED", acceptedAt: now } });
+  if (changed.count !== 1) throw new AppError(409, "Invitation changed and can no longer be accepted.");
+  return { id: invitation.id, status: "ACCEPTED" as const, acceptedAt: now, expiresAt: invitation.expiresAt, token: rawToken, assessment: { title: invitation.assessment.title } };
+};
+
 export const deleteInvitation = async (
   recruiterId: string,
   invitationId: string,

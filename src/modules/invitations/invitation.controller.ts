@@ -77,6 +77,14 @@ export const acceptInvitation = catchAsync(
   },
 );
 
+export const acceptInvitationById = catchAsync(async (req: Request, res: Response) => {
+  const invitationId = req.params.id;
+  if (!invitationId || Array.isArray(invitationId)) throw new AppError(400, "Invitation ID is required.");
+  const invitation = await invitationService.acceptInvitationById(getUserId(req), invitationId);
+  await writeAuditEvent({ actorId: getUserId(req), action: "INVITATION_ACCEPTED", entity: "Invitation", entityId: invitation.id, request: req });
+  return sendSuccess(res, "Invitation accepted successfully.", invitation, 200);
+});
+
 export const startAttempt = catchAsync(async (req: Request, res: Response) => {
   const token = req.params.token;
   if (!token || Array.isArray(token)) {

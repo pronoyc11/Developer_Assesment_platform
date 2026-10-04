@@ -4,6 +4,7 @@ import { requireRoles } from "../../middlewares/role.middleware";
 import { validate } from "../../middlewares/validate.middleware";
 import {
   acceptInvitation,
+  acceptInvitationById,
   deleteInvitation,
   getInvitation,
   listCandidateInvitations,
@@ -29,6 +30,13 @@ router.get(
   authenticate,
   validate(invitationIdParamsSchema, "params"),
   getInvitation,
+);
+router.post(
+  "/id/:id/accept",
+  authenticate,
+  requireRoles("CANDIDATE"),
+  validate(invitationIdParamsSchema, "params"),
+  acceptInvitationById,
 );
 router.post(
   "/:token/accept",
