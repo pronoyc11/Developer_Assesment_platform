@@ -71,6 +71,13 @@ export const assessmentItemParamsSchema = z.object({
   itemId: z.string().uuid("Assessment item ID must be a valid UUID"),
 });
 
+export const listAssessmentCandidatesQuerySchema = z.object({
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(100).default(10),
+  search: z.string().trim().max(255).optional(),
+  kind: z.enum(["ATTENDED", "PASSED"]).default("ATTENDED"),
+});
+
 export const addAssessmentItemSchema = z
   .object({
     problemId: z.string().uuid("Problem ID must be a valid UUID"),
@@ -128,6 +135,7 @@ export const reorderAssessmentItemsSchema = z
 export type CreateAssessmentInput = z.infer<typeof createAssessmentSchema>;
 export type UpdateAssessmentInput = z.infer<typeof updateAssessmentSchema>;
 export type ListAssessmentsQuery = z.infer<typeof listAssessmentsQuerySchema>;
+export type ListAssessmentCandidatesQuery = z.infer<typeof listAssessmentCandidatesQuerySchema>;
 export type AddAssessmentItemInput = z.infer<typeof addAssessmentItemSchema>;
 export type UpdateAssessmentItemInput = z.infer<
   typeof updateAssessmentItemSchema

@@ -63,6 +63,11 @@ export const listAssessments = catchAsync(
   },
 );
 
+export const listAssessmentCandidates = catchAsync(async (req: Request, res: Response) => {
+  const result = await assessmentService.listAssessmentCandidates(getRecruiterId(req), getAssessmentId(req), req.query as unknown as Parameters<typeof assessmentService.listAssessmentCandidates>[2]);
+  return sendSuccess(res, "Assessment candidates retrieved successfully.", result, 200);
+});
+
 export const getAssessment = catchAsync(async (req: Request, res: Response) => {
   const assessment = await assessmentService.getAssessment(
     getRecruiterId(req),

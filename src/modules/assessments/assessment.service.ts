@@ -6,10 +6,21 @@ import type {
   AddAssessmentItemInput,
   CreateAssessmentInput,
   ListAssessmentsQuery,
+  ListAssessmentCandidatesQuery,
   ReorderAssessmentItemsInput,
   UpdateAssessmentInput,
   UpdateAssessmentItemInput,
 } from "./assessment.validation";
+
+export const listAssessmentCandidates = async (recruiterId: string, assessmentId: string, query: ListAssessmentCandidatesQuery) => {
+  const assessment = await prisma.assessment.findFirst({ where: { id: assessmentId, recruiterId, deletedAt: null }, select: { id: true, passingScore: true } });
+  if (!assessment) throw new AppError(404, "Assessment not found.");
+  const { page, limit, skip } = getPagination(query);
+  const where: Prisma.AttemptWhereInput = { assessmentId, status: query.kind === "PASSED" ? "EVALUATED" : { in: ["SUBMITTED", "EVALUATED"] }, candidate: { is: { deletedAt: null, ...(query.search && { OR: [{ name: { contains: query.search, mode: "insensitive" } }, { email: { contains: query.search, mode: "insensitive" } }] }) } } };
+  const attempts = await prisma.attempt.findMany({ where, orderBy: { submittedAt: "desc" }, select: { id: true, status: true, submittedAt: true, evaluatedAt: true, totalScore: true, maxScore: true, candidate: { select: { id: true, name: true, email: true, avatarUrl: true } } } });
+  const filtered = query.kind === "PASSED" ? attempts.filter((attempt) => attempt.maxScore > 0 && (attempt.totalScore / attempt.maxScore) * 100 >= assessment.passingScore) : attempts;
+  return { candidates: filtered.slice(skip, skip + limit).map((attempt) => ({ ...attempt.candidate, attemptId: attempt.id, status: attempt.status, submittedAt: attempt.submittedAt, evaluatedAt: attempt.evaluatedAt, score: attempt.totalScore, maxScore: attempt.maxScore, passed: attempt.maxScore > 0 && (attempt.totalScore / attempt.maxScore) * 100 >= assessment.passingScore })), pagination: getPaginationMeta(page, limit, filtered.length) };
+};
 
 const assessmentSummarySelect = {
   id: true,

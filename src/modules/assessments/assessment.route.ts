@@ -17,6 +17,7 @@ import {
   getAssessment,
   listAssessmentInvitations,
   listAssessmentSubmissions,
+  listAssessmentCandidates,
   listAssessments,
   markAssessmentReady,
   reorderAssessmentItems,
@@ -29,6 +30,7 @@ import {
   assessmentItemParamsSchema,
   createAssessmentSchema,
   listAssessmentsQuerySchema,
+  listAssessmentCandidatesQuerySchema,
   reorderAssessmentItemsSchema,
   updateAssessmentItemSchema,
   updateAssessmentSchema,
@@ -50,6 +52,12 @@ router.get(
   validate(assessmentIdParamsSchema, "params"),
   validate(listInvitationsQuerySchema, "query"),
   listAssessmentInvitations,
+);
+router.get(
+  "/:assessmentId/candidates",
+  validate(assessmentIdParamsSchema, "params"),
+  validate(listAssessmentCandidatesQuerySchema, "query"),
+  listAssessmentCandidates,
 );
 router.get(
   "/:assessmentId/submissions",
