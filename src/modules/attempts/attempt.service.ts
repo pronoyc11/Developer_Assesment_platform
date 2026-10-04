@@ -236,8 +236,7 @@ const throwAttemptConflict = (error: unknown, message: string): never => {
 };
 
 export const startAttempt = async (candidateId: string, rawToken: string) => {
-  // const token = hashToken(rawToken);
-  const token = rawToken;
+  const token = hashToken(rawToken);
   const now = new Date();
   try {
     const attempt = await prisma.$transaction(
