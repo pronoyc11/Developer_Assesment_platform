@@ -6,11 +6,13 @@ import {
   getAttempt,
   listCandidateAttempts,
   submitAttempt,
+  cancelAttempt,
 } from "./attempt.controller";
 import {
   attemptIdParamsSchema,
   listCandidateAttemptsQuerySchema,
   submitAnswersSchema,
+  cancelAttemptSchema,
 } from "./attempt.validation";
 
 const router = Router();
@@ -27,6 +29,12 @@ router.post(
   validate(attemptIdParamsSchema, "params"),
   validate(submitAnswersSchema),
   submitAttempt,
+);
+router.post(
+  "/:id/cancel",
+  validate(attemptIdParamsSchema, "params"),
+  validate(cancelAttemptSchema),
+  cancelAttempt,
 );
 
 export default router;

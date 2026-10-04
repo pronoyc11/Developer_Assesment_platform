@@ -39,6 +39,13 @@ const submitAnswersSchema = z
     }
   });
 
+const cancelAttemptSchema = z.object({
+  answers: z.array(z.object({
+    assessmentItemId: z.string().uuid("Assessment item ID must be a valid UUID"),
+    answer: z.string().max(50000, "Answer cannot exceed 50000 characters"),
+  }).strict()).default([]),
+}).strict();
+
 const listSubmissionsQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(100).default(10),
@@ -51,7 +58,7 @@ const listCandidateAttemptsQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(100).default(10),
   status: z
-    .enum(["NOT_STARTED", "IN_PROGRESS", "SUBMITTED", "EVALUATED"])
+    .enum(["NOT_STARTED", "IN_PROGRESS", "SUBMITTED", "EVALUATED", "CANCELLED"])
     .optional(),
 });
 
@@ -68,6 +75,7 @@ const evaluateSubmissionSchema = z
 
 export {
   attemptIdParamsSchema,
+  cancelAttemptSchema,
   evaluateSubmissionSchema,
   invitationTokenParamsSchema,
   listCandidateAttemptsQuerySchema,
@@ -82,3 +90,4 @@ export type ListCandidateAttemptsQuery = z.infer<
 >;
 export type ListSubmissionsQuery = z.infer<typeof listSubmissionsQuerySchema>;
 export type SubmitAnswersInput = z.infer<typeof submitAnswersSchema>;
+export type CancelAttemptInput = z.infer<typeof cancelAttemptSchema>;

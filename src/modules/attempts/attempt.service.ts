@@ -10,6 +10,7 @@ import { getPagination, getPaginationMeta } from "../../utils/pagination";
 import { hashToken } from "../../utils/token";
 import type {
   EvaluateSubmissionInput,
+  CancelAttemptInput,
   ListCandidateAttemptsQuery,
   ListSubmissionsQuery,
   SubmitAnswersInput,
@@ -355,6 +356,22 @@ export const getAttempt = async (candidateId: string, attemptId: string) => {
     throw new AppError(404, "Attempt not found.");
   }
   return candidateAttemptDto(attempt);
+};
+
+export const cancelAttempt = async (candidateId: string, attemptId: string, data: CancelAttemptInput) => {
+  const now = new Date();
+  return prisma.$transaction(async (transaction) => {
+    const attempt = await transaction.attempt.findFirst({ where: { id: attemptId, candidateId }, select: { id: true, status: true, assessment: { select: { items: { select: { id: true } } } } } });
+    if (!attempt) throw new AppError(404, "Attempt not found.");
+    if (attempt.status !== "IN_PROGRESS") throw new AppError(409, "Attempt is no longer active.");
+    const validItems = new Set(attempt.assessment.items.map((item) => item.id));
+    if (data.answers.some((answer) => !validItems.has(answer.assessmentItemId))) throw new AppError(400, "Answer belongs to an invalid assessment item.");
+    for (const answer of data.answers) {
+      await transaction.submission.upsert({ where: { attemptId_assessmentItemId: { attemptId, assessmentItemId: answer.assessmentItemId } }, create: { attemptId, assessmentItemId: answer.assessmentItemId, answer: answer.answer }, update: { answer: answer.answer } });
+    }
+    await transaction.attempt.update({ where: { id: attemptId }, data: { status: "CANCELLED", submittedAt: now } });
+    return { id: attemptId, status: "CANCELLED" as const, submittedAt: now };
+  });
 };
 
 export const submitAttempt = async (

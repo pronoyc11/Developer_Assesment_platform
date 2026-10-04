@@ -71,3 +71,12 @@ export const submitAttempt = catchAsync(async (req: Request, res: Response) => {
   });
   return sendSuccess(res, "Attempt submitted successfully.", attempt, 200);
 });
+
+export const cancelAttempt = catchAsync(async (req: Request, res: Response) => {
+  const candidateId = req.user?.id;
+  const attemptId = req.params.id;
+  if (!candidateId || !attemptId || Array.isArray(attemptId)) throw new AppError(400, "Attempt ID is required.");
+  const attempt = await attemptService.cancelAttempt(candidateId, attemptId, req.body);
+  await writeAuditEvent({ actorId: candidateId, action: "ATTEMPT_CANCELLED", entity: "Attempt", entityId: attemptId, request: req });
+  return sendSuccess(res, "Assessment attempt cancelled.", attempt, 200);
+});

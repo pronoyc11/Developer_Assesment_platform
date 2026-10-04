@@ -58,7 +58,8 @@ export const AttemptStatus = {
   NOT_STARTED: 'NOT_STARTED',
   IN_PROGRESS: 'IN_PROGRESS',
   SUBMITTED: 'SUBMITTED',
-  EVALUATED: 'EVALUATED'
+  EVALUATED: 'EVALUATED',
+  CANCELLED: 'CANCELLED'
 } as const
 
 export type AttemptStatus = (typeof AttemptStatus)[keyof typeof AttemptStatus]

@@ -33,6 +33,7 @@ enum AttemptStatus {
   IN_PROGRESS
   SUBMITTED
   EVALUATED
+  CANCELLED
 }
 
 enum InvitationStatus {
