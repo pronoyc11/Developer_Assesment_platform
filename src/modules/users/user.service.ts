@@ -7,7 +7,9 @@ import type { UserProfileResponse } from "./user.types";
 import type {
   ChangePasswordInput,
   UpdateProfileInput,
+  ListCandidatesQuery,
 } from "./user.validation";
+import { getPagination, getPaginationMeta } from "../../utils/pagination";
 
 export const toPublicUserProfile = (user: User): UserProfileResponse => ({
   id: user.id,
@@ -170,4 +172,20 @@ export const updateAvatar = async (
     await deleteCloudinaryAsset(uploadResult.publicId);
     throw error;
   }
+};
+
+export const listCandidates = async (query: ListCandidatesQuery) => {
+  const { page, limit, skip } = getPagination(query);
+  const where = { role: "CANDIDATE" as const, status: "ACTIVE" as const, emailVerified: true, deletedAt: null, ...(query.search && { OR: [{ name: { contains: query.search, mode: "insensitive" as const } }, { email: { contains: query.search, mode: "insensitive" as const } }] }) };
+  const [candidates, total] = await prisma.$transaction([
+    prisma.user.findMany({ where, select: { id: true, name: true, email: true, avatarUrl: true, createdAt: true }, orderBy: { name: query.sortOrder }, skip, take: limit }),
+    prisma.user.count({ where }),
+  ]);
+  return { candidates, pagination: getPaginationMeta(page, limit, total) };
+};
+
+export const getCandidate = async (candidateId: string) => {
+  const candidate = await prisma.user.findFirst({ where: { id: candidateId, role: "CANDIDATE", status: "ACTIVE", emailVerified: true, deletedAt: null }, select: { id: true, name: true, email: true, avatarUrl: true, createdAt: true, updatedAt: true } });
+  if (!candidate) throw new AppError(404, "Candidate not found.");
+  return candidate;
 };

@@ -61,3 +61,15 @@ export const updateAvatar = catchAsync(async (req: Request, res: Response) => {
 
   return sendSuccess(res, "Avatar updated successfully.", updatedProfile, 200);
 });
+
+export const listCandidates = catchAsync(async (req: Request, res: Response) => {
+  const candidates = await userService.listCandidates(req.query as never);
+  return sendSuccess(res, "Candidates retrieved successfully.", candidates, 200);
+});
+
+export const getCandidate = catchAsync(async (req: Request, res: Response) => {
+  const candidateId = req.params.id;
+  if (!candidateId || Array.isArray(candidateId)) throw new AppError(400, "Candidate ID is required.");
+  const candidate = await userService.getCandidate(candidateId);
+  return sendSuccess(res, "Candidate retrieved successfully.", candidate, 200);
+});
