@@ -220,8 +220,8 @@ const processSuccessfulSession = async (session: Stripe.Checkout.Session) => {
           },
           select: { id: true, status: true },
         });
-        if (assessment?.status !== "READY") {
-          throw new AppError(409, "Assessment is no longer ready to publish.");
+        if (!assessment || (assessment.status !== "DRAFT" && assessment.status !== "READY")) {
+          throw new AppError(409, "Assessment cannot be published in its current state.");
         }
 
         const paid = await transaction.payment.updateMany({
@@ -239,7 +239,7 @@ const processSuccessfulSession = async (session: Stripe.Checkout.Session) => {
           where: {
             id: assessmentId,
             recruiterId: payment.createdById,
-            status: "READY",
+            status: { in: ["DRAFT", "READY"] },
             deletedAt: null,
           },
           data: { status: "PUBLISHED", publishedAt: new Date() },
