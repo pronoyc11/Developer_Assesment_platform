@@ -239,6 +239,7 @@ const throwAttemptConflict = (error: unknown, message: string): never => {
 export const startAttempt = async (candidateId: string, rawToken: string) => {
   const token = rawToken;
   // const token = hashToken(rawToken);
+  //The above commented line double hashes the token while testing in postman, that's why it is commented.
   const now = new Date();
   try {
     const attempt = await prisma.$transaction(

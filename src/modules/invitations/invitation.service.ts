@@ -340,6 +340,7 @@ export const acceptInvitation = async (
   rawToken: string,
 ) => {
   // const token = hashToken(rawToken);
+  //The above commented line double hashes the token while testing in postman, that's why it is commented.
   const token = rawToken;
   const now = new Date();
 
