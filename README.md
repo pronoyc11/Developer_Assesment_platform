@@ -182,7 +182,7 @@ The API base URL is:
 http://localhost:5000/api/v1
 ```
 
-The root endpoint returns `Working fine`, and the health endpoint is:
+The root endpoint is `GET /` and returns `Working fine`. The health endpoint is:
 
 ```http
 GET /api/v1/health
@@ -286,6 +286,8 @@ The following paths are relative to `/api/v1`.
 | `POST` | `/auth/register` | Public | Register a candidate or recruiter. Sends an email-verification OTP. |
 | `POST` | `/auth/verify-email` | Public | Verify an email using `email` and a six-digit `otp`. |
 | `POST` | `/auth/resend-verification` | Public | Send a new verification OTP. |
+| `POST` | `/auth/forgot-password` | Public | Request a password-reset email. The response is intentionally generic so it does not disclose whether an email is registered. |
+| `POST` | `/auth/reset-password` | Public | Set a new password with a single-use, 15-minute reset token. Existing refresh sessions are revoked after success. |
 | `POST` | `/auth/login` | Public | Log in with email and password. |
 | `POST` | `/auth/google` | Public | Log in or register using a Google credential. |
 | `POST` | `/auth/refresh` | Public/refresh token | Issue a new access token using a refresh token. |
@@ -306,6 +308,23 @@ Example registration:
 
 The `role` may be `CANDIDATE` or `RECRUITER`; it defaults to `CANDIDATE`.
 
+Password reset request example:
+
+```json
+{
+  "email": "candidate@example.com"
+}
+```
+
+Password reset example:
+
+```json
+{
+  "token": "token-from-the-reset-link",
+  "password": "NewCandidatePass123!"
+}
+```
+
 ### Users
 
 | Method | Path | Auth | Description |
@@ -314,6 +333,10 @@ The `role` may be `CANDIDATE` or `RECRUITER`; it defaults to `CANDIDATE`.
 | `PATCH` | `/users/me` | Any authenticated user | Update the current profile. |
 | `PATCH` | `/users/me/password` | Any authenticated user | Change the current password. |
 | `PATCH` | `/users/me/avatar` | Any authenticated user | Upload or replace the profile avatar. |
+| `GET` | `/users/candidates?page=1&limit=10&search=alex&sortOrder=asc` | Approved recruiter | List active, email-verified candidates for invitation workflows. |
+| `GET` | `/users/candidates/:id` | Approved recruiter | View the invitation-related profile of one eligible candidate. |
+
+`PATCH /users/me` currently updates the authenticated user’s name. `PATCH /users/me/password` requires both `currentPassword` and `newPassword`. Avatar endpoints use multipart form data with the uploaded image field expected by the upload middleware.
 
 ### Recruiter profiles
 
@@ -329,13 +352,13 @@ All problem endpoints require an approved `RECRUITER`.
 
 | Method | Path | Description |
 |---|---|---|
-| `GET` | `/problems?page=1&limit=10&search=HTTP&type=MCQ&sortBy=createdAt&sortOrder=desc` | List the recruiter’s problems. |
+| `GET` | `/problems?page=1&limit=10&search=HTTP&type=MCQ&sortBy=createdAt&sortOrder=desc` | List the authenticated recruiter’s own problems with search, type filtering, sorting, and pagination. |
 | `POST` | `/problems` | Create an MCQ or written problem. |
 | `GET` | `/problems/:id` | Get one owned problem. |
 | `PATCH` | `/problems/:id` | Update an owned problem. |
 | `DELETE` | `/problems/:id` | Soft-delete an owned problem. |
 
-MCQ problems require `options` and a `correctAnswer` matching one option. Written problems require `expectedAnswer` and cannot include MCQ options or a correct answer.
+MCQ problems require `options` and a `correctAnswer` matching one option. Written problems require `expectedAnswer` and cannot include MCQ options or a correct answer. Problem records are owned by the recruiter who created them.
 
 Example MCQ:
 
@@ -381,9 +404,20 @@ All assessment endpoints require an approved `RECRUITER`. Recruiters can access 
 | `POST` | `/assessments/:assessmentId/payment` | Create a Stripe publishing checkout session. |
 | `POST` | `/assessments/:assessmentId/invitations` | Invite an active, verified candidate. |
 | `GET` | `/assessments/:assessmentId/invitations` | List invitations for an owned assessment. |
+| `GET` | `/assessments/:assessmentId/candidates?page=1&limit=10&search=alex&kind=ATTENDED` | List candidates who attended an owned assessment; use `kind=PASSED` for candidates who passed. |
 | `GET` | `/assessments/:assessmentId/submissions` | List submissions for an owned assessment. |
 
 Assessment status values are `DRAFT`, `READY`, `PUBLISHED`, and `CLOSED`. Problems are copied into an assessment as snapshots, so later problem-bank changes do not alter an existing assessment item.
+
+Assessment authoring rules:
+
+- New assessments start as `DRAFT`.
+- Items are added from the recruiter’s own problem bank and copied as snapshots.
+- Draft/ready metadata can be updated according to the service state rules; item order can be changed with either the single-item or bulk reorder endpoint.
+- `/ready` validates that the assessment contains at least one item and transitions it to `READY`.
+- Publishing requires the Stripe checkout flow. A successful payment/webhook transitions the assessment to `PUBLISHED`.
+- Invitations can only be created for a published, open assessment and an active, verified candidate.
+- Candidate-list queries support `page`, `limit`, `search`, and `kind=ATTENDED|PASSED`.
 
 ### Invitations
 
@@ -391,11 +425,12 @@ Assessment status values are `DRAFT`, `READY`, `PUBLISHED`, and `CLOSED`. Proble
 |---|---|---|---|
 | `GET` | `/invitations/candidate-invitations?page=1&limit=10&status=PENDING` | Candidate | List the current candidate’s incoming invitations. |
 | `GET` | `/invitations/:id` | Candidate or owning recruiter | Get one invitation. |
+| `POST` | `/invitations/id/:id/accept` | Candidate | Accept an invitation using its database ID from the authenticated candidate’s invitation list. |
 | `POST` | `/invitations/:token/accept` | Candidate | Accept a valid, pending, unexpired invitation. |
 | `POST` | `/invitations/:token/start` | Candidate | Start an attempt from an accepted invitation. |
 | `DELETE` | `/invitations/:id` | Owning recruiter | Soft-delete a pending invitation. |
 
-Invitation tokens are sent in email links and are not returned in normal API responses. Invitations are valid for seven days. An invitation can be created only for an active, verified candidate and a published, open assessment.
+Invitation tokens are sent in email links and are not returned in normal API responses. Invitations are valid for seven days. An invitation can be created only for an active, verified candidate and a published, open assessment. Token-based accept/start endpoints validate the candidate identity against the authenticated account; the ID-based accept endpoint is intended for the in-app invitation list.
 
 Candidate invitation-list query parameters:
 
@@ -414,8 +449,9 @@ All attempt endpoints require an authenticated `CANDIDATE`. Each candidate is re
 | `GET` | `/attempts?page=1&limit=10&status=EVALUATED` | List the candidate’s own attempts. |
 | `GET` | `/attempts/:id` | Get a candidate-safe attempt including assessment items and answers. |
 | `POST` | `/attempts/:id/submit` | Submit answers for an in-progress attempt. |
+| `POST` | `/attempts/:id/cancel` | Cancel an in-progress attempt and optionally persist the answers currently on screen. |
 
-Attempt statuses are `NOT_STARTED`, `IN_PROGRESS`, `SUBMITTED`, and `EVALUATED`. The list endpoint returns summary information, score/result data where available, and pagination metadata. Use the detail endpoint when the assessment questions or submitted answers are required.
+Attempt statuses are `NOT_STARTED`, `IN_PROGRESS`, `SUBMITTED`, `EVALUATED`, and `CANCELLED`. The list endpoint returns summary information, score/result data where available, assessment-name search results, and pagination metadata. Use the detail endpoint when the assessment questions, submitted answers, per-item marks, or evaluation information are required. A candidate can only read or mutate their own attempts. Objective answers are evaluated automatically; written submissions remain pending until a recruiter evaluates them.
 
 Example answer submission:
 
@@ -474,6 +510,16 @@ All admin endpoints require `ADMIN`.
 | `GET` | `/admin/audit-logs/:id` | Get one audit log. |
 | `GET` | `/admin/recruiter-applications?page=1&limit=10` | List recruiter applications. |
 | `PATCH` | `/admin/recruiter-applications/:userId/approve` | Approve a recruiter application. |
+| `PATCH` | `/admin/recruiter-applications/:userId/reject` | Reject a pending recruiter application and return the account to the normal candidate state. |
+
+Admin list and audit filters:
+
+- `/admin/users` supports `page`, `limit`, `search`, `role`, `status`, `sortBy`, and `sortOrder`.
+- `/admin/audit-logs` supports `page`, `limit`, `actorId`, `action`, `entity`, `entityId`, `from`, `to`, and `sortOrder`.
+- `/admin/recruiter-applications` supports `page` and `limit`.
+- `/admin/users/:id/status` accepts `ACTIVE`, `BLOCKED`, or `SUSPENDED`.
+
+Approving a pending recruiter changes the account to recruiter access and sends an approval email. Rejecting a pending recruiter keeps the account as a candidate and sends a rejection email. Both decisions are recorded in the audit log.
 
 ## Typical workflows
 
