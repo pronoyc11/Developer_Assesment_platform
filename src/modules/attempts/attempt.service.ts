@@ -53,6 +53,7 @@ const attemptDetailSelect = {
     select: {
       assessmentItemId: true,
       answer: true,
+      score: true,
       status: true,
     },
   },
@@ -89,7 +90,7 @@ const candidateAttemptDto = (attempt: {
     >;
   };
   submissions: Array<
-    Pick<Submission, "assessmentItemId" | "answer" | "status">
+    Pick<Submission, "assessmentItemId" | "answer" | "score" | "status">
   >;
 }) => ({
   id: attempt.id,
@@ -130,6 +131,7 @@ const candidateAttemptDto = (attempt: {
   answers: attempt.submissions.map((submission) => ({
     assessmentItemId: submission.assessmentItemId,
     answer: submission.answer,
+    score: submission.score,
     status: submission.status,
   })),
   ...(attempt.status === "EVALUATED" && {

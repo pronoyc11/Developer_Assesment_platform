@@ -87,6 +87,15 @@ export const approveRecruiterApplication = async (userId: string) => {
   return approvedUser;
 };
 
+export const rejectRecruiterApplication = async (userId: string) => {
+  const result = await prisma.user.updateMany({
+    where: { id: userId, role: "CANDIDATE", recruiterStatus: "PENDING", deletedAt: null },
+    data: { recruiterStatus: "NOT_REQUESTED" },
+  });
+  if (result.count !== 1) throw new AppError(409, "Recruiter application is not pending approval.");
+  return getUser(userId);
+};
+
 export const listUsers = async (query: ListAdminUsersQuery) => {
   const { page, limit, skip } = getPagination(query);
   const where = {

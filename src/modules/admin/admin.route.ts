@@ -4,6 +4,7 @@ import { requireRoles } from "../../middlewares/role.middleware";
 import { validate } from "../../middlewares/validate.middleware";
 import {
   approveRecruiterApplication,
+  rejectRecruiterApplication,
   getAuditLog,
   getDashboard,
   getUser,
@@ -53,6 +54,11 @@ router.patch(
   "/recruiter-applications/:userId/approve",
   validate(approveRecruiterApplicationParamsSchema, "params"),
   approveRecruiterApplication,
+);
+router.patch(
+  "/recruiter-applications/:userId/reject",
+  validate(approveRecruiterApplicationParamsSchema, "params"),
+  rejectRecruiterApplication,
 );
 
 export default router;

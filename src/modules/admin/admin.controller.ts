@@ -45,6 +45,14 @@ export const approveRecruiterApplication = catchAsync(
   },
 );
 
+export const rejectRecruiterApplication = catchAsync(async (req: Request, res: Response) => {
+  const userId = req.params.userId;
+  if (!userId || Array.isArray(userId)) throw new AppError(400, "User ID is required.");
+  const user = await adminService.rejectRecruiterApplication(userId);
+  await writeAuditEvent({ actorId: req.user?.id ?? null, action: "RECRUITER_REJECTED", entity: "User", entityId: userId, request: req });
+  return sendSuccess(res, "Recruiter application rejected successfully.", user, 200);
+});
+
 export const listUsers = catchAsync(async (req: Request, res: Response) => {
   const result = await adminService.listUsers(
     req.query as unknown as Parameters<typeof adminService.listUsers>[0],
