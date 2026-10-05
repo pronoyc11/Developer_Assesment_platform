@@ -212,7 +212,7 @@ export const listCandidateAttempts = async (
             attempt.maxScore === 0
               ? 0
               : Math.round((attempt.totalScore / attempt.maxScore) * 10000) /
-                100,
+              100,
           passingScore: attempt.assessment.passingScore,
           passed:
             (attempt.maxScore === 0
@@ -266,7 +266,7 @@ export const startAttempt = async (candidateId: string, rawToken: string) => {
           throw new AppError(404, "Invitation not found.");
         }
         if (invitation.candidateId !== candidateId) {
-          throw new AppError(404, "Invitation not found.");
+          throw new AppError(404, "Invitation not found(Not yours).");
         }
         if (invitation.status !== "ACCEPTED") {
           throw new AppError(
