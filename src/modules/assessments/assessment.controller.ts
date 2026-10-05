@@ -144,6 +144,12 @@ export const addAssessmentItem = catchAsync(
   },
 );
 
+export const addAssessmentItems = catchAsync(async (req: Request, res: Response) => {
+  const items = await assessmentService.addAssessmentItems(getRecruiterId(req), getAssessmentId(req), req.body);
+  await Promise.all(items.map((item) => writeAuditEvent({ actorId: getRecruiterId(req), action: "ASSESSMENT_ITEM_ADDED", entity: "AssessmentItem", entityId: item.id, metadata: { assessmentId: getAssessmentId(req), bulk: true }, request: req })));
+  return sendSuccess(res, `${items.length} problems added to assessment.`, items, 201);
+});
+
 export const updateAssessmentItem = catchAsync(
   async (req: Request, res: Response) => {
     const itemId = req.params.itemId;

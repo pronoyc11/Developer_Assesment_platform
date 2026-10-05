@@ -9,6 +9,7 @@ import {
 } from "../invitations/invitation.validation";
 import {
   addAssessmentItem,
+  addAssessmentItems,
   createAssessment,
   createAssessmentInvitation,
   createPublishingCheckout,
@@ -26,6 +27,7 @@ import {
 } from "./assessment.controller";
 import {
   addAssessmentItemSchema,
+  addAssessmentItemsSchema,
   assessmentIdParamsSchema,
   assessmentItemParamsSchema,
   createAssessmentSchema,
@@ -70,6 +72,12 @@ router.post(
   validate(assessmentIdParamsSchema, "params"),
   validate(addAssessmentItemSchema),
   addAssessmentItem,
+);
+router.post(
+  "/:assessmentId/items/bulk",
+  validate(assessmentIdParamsSchema, "params"),
+  validate(addAssessmentItemsSchema),
+  addAssessmentItems,
 );
 router.patch(
   "/:assessmentId/items/reorder",

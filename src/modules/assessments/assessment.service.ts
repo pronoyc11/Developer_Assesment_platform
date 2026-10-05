@@ -4,6 +4,7 @@ import { AppError } from "../../utils/appError";
 import { getPagination, getPaginationMeta } from "../../utils/pagination";
 import type {
   AddAssessmentItemInput,
+  AddAssessmentItemsInput,
   CreateAssessmentInput,
   ListAssessmentsQuery,
   ListAssessmentCandidatesQuery,
@@ -354,6 +355,50 @@ export const addAssessmentItem = async (
       error,
       "Problem or order conflicts with an existing assessment item. Retry the request.",
     );
+  }
+};
+
+export const addAssessmentItems = async (
+  recruiterId: string,
+  assessmentId: string,
+  data: AddAssessmentItemsInput,
+) => {
+  try {
+    return await prisma.$transaction(
+      async (transaction) => {
+        const assessment = await transaction.assessment.findFirst({
+          where: { id: assessmentId, recruiterId, deletedAt: null },
+          select: { id: true, status: true },
+        });
+        if (!assessment) throw new AppError(404, "Assessment not found.");
+        ensureEditable(assessment);
+
+        const problems = await transaction.problem.findMany({
+          where: { id: { in: data.items.map((item) => item.problemId) }, recruiterId, deletedAt: null },
+          select: { id: true, title: true, question: true, type: true, options: true, points: true, correctAnswer: true, expectedAnswer: true },
+        });
+        if (problems.length !== data.items.length) throw new AppError(404, "One or more problems were not found.");
+
+        const existing = await transaction.assessmentItem.findMany({
+          where: { assessmentId, OR: [{ problemId: { in: data.items.map((item) => item.problemId) } }, { order: { in: data.items.map((item) => item.order) } }] },
+          select: { problemId: true, order: true },
+        });
+        if (existing.some((item) => data.items.some((candidate) => candidate.problemId === item.problemId))) throw new AppError(409, "One or more problems are already included in this assessment.");
+        if (existing.some((item) => data.items.some((candidate) => candidate.order === item.order))) throw new AppError(409, "One or more assessment item orders are already in use.");
+
+        const problemById = new Map(problems.map((problem) => [problem.id, problem]));
+        const items = await Promise.all(data.items.map((input) => {
+          const problem = problemById.get(input.problemId);
+          if (!problem) throw new AppError(404, "One or more problems were not found.");
+          return transaction.assessmentItem.create({ data: { assessmentId, problemId: problem.id, order: input.order, title: problem.title, question: problem.question, type: problem.type, options: problem.options, points: problem.points, correctAnswer: problem.correctAnswer, expectedAnswer: problem.expectedAnswer }, select: { id: true, problemId: true, order: true, title: true, question: true, type: true, options: true, points: true, correctAnswer: true, expectedAnswer: true } });
+        }));
+        if (assessment.status === "READY") await transaction.assessment.update({ where: { id: assessmentId }, data: { status: "DRAFT" } });
+        return items;
+      },
+      { isolationLevel: Prisma.TransactionIsolationLevel.Serializable },
+    );
+  } catch (error) {
+    throwDatabaseConflict(error, "Problems or item orders conflict with the assessment. Retry the request.");
   }
 };
 

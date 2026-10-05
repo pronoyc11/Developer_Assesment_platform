@@ -85,6 +85,23 @@ export const addAssessmentItemSchema = z
   })
   .strict();
 
+export const addAssessmentItemsSchema = z
+  .object({
+    items: z
+      .array(addAssessmentItemSchema)
+      .min(1, "At least one assessment item is required")
+      .max(100, "An assessment cannot receive more than 100 items at once"),
+  })
+  .strict()
+  .superRefine(({ items }, context) => {
+    if (new Set(items.map((item) => item.problemId)).size !== items.length) {
+      context.addIssue({ code: "custom", path: ["items"], message: "Problem IDs must not be duplicated" });
+    }
+    if (new Set(items.map((item) => item.order)).size !== items.length) {
+      context.addIssue({ code: "custom", path: ["items"], message: "Item orders must not be duplicated" });
+    }
+  });
+
 export const updateAssessmentItemSchema = z
   .object({
     order: z.number().int().min(1).max(10000),
@@ -137,6 +154,7 @@ export type UpdateAssessmentInput = z.infer<typeof updateAssessmentSchema>;
 export type ListAssessmentsQuery = z.infer<typeof listAssessmentsQuerySchema>;
 export type ListAssessmentCandidatesQuery = z.infer<typeof listAssessmentCandidatesQuerySchema>;
 export type AddAssessmentItemInput = z.infer<typeof addAssessmentItemSchema>;
+export type AddAssessmentItemsInput = z.infer<typeof addAssessmentItemsSchema>;
 export type UpdateAssessmentItemInput = z.infer<
   typeof updateAssessmentItemSchema
 >;
