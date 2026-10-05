@@ -7935,6 +7935,117 @@
           }
         ]
       }
+    },
+    {
+      "name": "Recently added APIs",
+      "description": "Requests added for password recovery, candidate discovery, assessment attendance/pass reporting, invitation acceptance by ID, attempt cancellation, and recruiter rejection.",
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "PASTE_ACCESS_JWT_FOR_THE_SELECTED_ROLE",
+            "type": "string"
+          }
+        ]
+      },
+      "item": [
+        {
+          "name": "Forgot password",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"candidate@example.com\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/auth/forgot-password",
+            "description": "Public endpoint. Sends a 15-minute password reset link when the email belongs to an active account. The response is intentionally generic."
+          }
+        },
+        {
+          "name": "Reset password",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"PASTE_RESET_TOKEN_FROM_EMAIL\",\n  \"password\": \"NewCandidatePass123!\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/auth/reset-password",
+            "description": "Public endpoint. Consumes the single-use reset token and revokes existing refresh sessions."
+          }
+        },
+        {
+          "name": "List candidates for invitation",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/users/candidates?page=1&limit=10&search=alex&sortOrder=asc",
+            "description": "Approved recruiter only. Lists active, email-verified candidates with pagination and name/email search."
+          }
+        },
+        {
+          "name": "Get candidate profile for invitation",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/users/candidates/3e26f756-dc74-47ca-9475-fb32c3bc3f56",
+            "description": "Approved recruiter only. Retrieves the eligible candidate profile by UUID."
+          }
+        },
+        {
+          "name": "List attended or passed candidates",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/assessments/4d6a8359-8b80-416f-bf38-be6140dc7333/candidates?page=1&limit=10&search=alex&kind=ATTENDED",
+            "description": "Approved owner-recruiter only. Use kind=ATTENDED or kind=PASSED to report candidates for an assessment."
+          }
+        },
+        {
+          "name": "Accept invitation by ID",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": "{{baseUrl}}/invitations/id/7f190523-de3d-4a9e-a38e-16833240829d/accept",
+            "description": "Candidate only. Accepts a pending, unexpired invitation selected from the candidate invitation list."
+          }
+        },
+        {
+          "name": "Cancel attempt with current answers",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"answers\": [\n    {\n      \"assessmentItemId\": \"082497a0-b861-4fc7-8329-4bf9c5b6d7a0\",\n      \"answer\": \"Current answer before leaving\"\n    }\n  ]\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/attempts/02b52e37-93af-4ba1-b111-25fad28603be/cancel",
+            "description": "Candidate only. Cancels an in-progress attempt and optionally stores answers currently on screen. Use an empty answers array when there are no answers."
+          }
+        },
+        {
+          "name": "Reject recruiter application",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": "{{baseUrl}}/admin/recruiter-applications/53d87986-4f56-4270-8d1e-b69e3654b951/reject",
+            "description": "Admin only. Rejects a pending recruiter application, returns the applicant to candidate status, records an audit event, and sends a rejection email."
+          }
+        }
+      ]
     }
   ],
   "variable": [
