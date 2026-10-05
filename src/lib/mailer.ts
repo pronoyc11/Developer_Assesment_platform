@@ -135,3 +135,23 @@ export const sendAssessmentInvitationEmail = async (input: {
     throw new AppError(502, "Failed to deliver the assessment invitation.");
   }
 };
+
+export const sendRecruiterApplicationDecisionEmail = async (input: {
+  to: string;
+  name: string;
+  approved: boolean;
+}): Promise<void> => {
+  if (!env.SMTP_PASSWORD || !env.SMTP_USER) {
+    throw new AppError(503, "Email delivery service is currently unavailable.");
+  }
+
+  const decision = input.approved ? "approved" : "rejected";
+  const subject = input.approved
+    ? "Your recruiter application was approved"
+    : "Update on your recruiter application";
+  const text = input.approved
+    ? `Hello ${input.name},\n\nYour application to become a recruiter on the Developer Assessment Platform has been approved. You can now sign in and access recruiter authoring features.\n\nThank you.`
+    : `Hello ${input.name},\n\nYour application to become a recruiter on the Developer Assessment Platform was not approved at this time. Your account remains a candidate account.\n\nYou may contact the platform administrator if you need more information.`;
+  const html = `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;"><h2>Developer Assessment Platform</h2><p>Hello ${escapeHtml(input.name)},</p><p>Your recruiter application has been <strong>${decision}</strong>.</p>${input.approved ? "<p>You can now sign in and access recruiter authoring features.</p>" : "<p>Your account remains a candidate account. You may contact the platform administrator if you need more information.</p>"}<p>Thank you.</p></div>`;
+  await transporter.sendMail({ from: mailConfig.from, to: input.to, subject, text, html });
+};

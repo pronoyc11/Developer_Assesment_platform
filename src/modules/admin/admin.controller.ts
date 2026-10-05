@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import { writeAuditEvent } from "../../lib/audit";
+import { sendRecruiterApplicationDecisionEmail } from "../../lib/mailer";
 import { AppError } from "../../utils/appError";
 import { catchAsync } from "../../utils/catchAsync";
 import { sendSuccess } from "../../utils/response";
@@ -35,6 +36,13 @@ export const approveRecruiterApplication = catchAsync(
       entityId: userId,
       request: req,
     });
+    await sendRecruiterApplicationDecisionEmail({
+      to: user.email,
+      name: user.name,
+      approved: true,
+    }).catch((error) =>
+      console.error("Recruiter approval email delivery failed:", error),
+    );
 
     return sendSuccess(
       res,
@@ -50,6 +58,13 @@ export const rejectRecruiterApplication = catchAsync(async (req: Request, res: R
   if (!userId || Array.isArray(userId)) throw new AppError(400, "User ID is required.");
   const user = await adminService.rejectRecruiterApplication(userId);
   await writeAuditEvent({ actorId: req.user?.id ?? null, action: "RECRUITER_REJECTED", entity: "User", entityId: userId, request: req });
+  await sendRecruiterApplicationDecisionEmail({
+    to: user.email,
+    name: user.name,
+    approved: false,
+  }).catch((error) =>
+    console.error("Recruiter rejection email delivery failed:", error),
+  );
   return sendSuccess(res, "Recruiter application rejected successfully.", user, 200);
 });
 
