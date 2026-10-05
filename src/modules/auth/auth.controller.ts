@@ -58,6 +58,20 @@ export const resendVerification = catchAsync(
   },
 );
 
+export const forgotPassword = catchAsync(
+  async (req: Request, res: Response) => {
+    const result = await authService.forgotPassword(req.body);
+    return sendSuccess(res, result.message, null, 200);
+  },
+);
+
+export const resetPassword = catchAsync(
+  async (req: Request, res: Response) => {
+    await authService.resetPassword(req.body);
+    return sendSuccess(res, "Password reset successfully. Please log in.", null, 200);
+  },
+);
+
 export const login = catchAsync(async (req: Request, res: Response) => {
   const result = await authService.login(req.body);
 

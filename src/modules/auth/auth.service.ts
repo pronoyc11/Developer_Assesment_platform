@@ -7,7 +7,10 @@ import {
   signRefreshToken,
   verifyRefreshToken,
 } from "../../lib/jwt";
-import { sendVerificationOtpEmail } from "../../lib/mailer";
+import {
+  sendPasswordResetEmail,
+  sendVerificationOtpEmail,
+} from "../../lib/mailer";
 import { comparePassword, hashPassword } from "../../lib/password";
 import { prisma } from "../../lib/prisma";
 import { AppError } from "../../utils/appError";
@@ -22,6 +25,10 @@ import {
   storePendingRegistration,
   verifyEmailVerificationOtp,
 } from "./auth.otp";
+import {
+  consumePasswordResetToken,
+  createPasswordResetToken,
+} from "./auth.password-reset";
 import type { AuthenticatedUser, AuthTokens } from "./auth.type";
 import type {
   GoogleAuthInput,
@@ -29,6 +36,10 @@ import type {
   RegisterInput,
   ResendVerificationInput,
   VerifyEmailInput,
+} from "./auth.validation";
+import type {
+  ForgotPasswordInput,
+  ResetPasswordInput,
 } from "./auth.validation";
 
 const googleClient = new OAuth2Client(env.GOOGLE_CLIENT_ID);
@@ -292,6 +303,47 @@ export const login = async (data: LoginInput) => {
     user: safeUser,
     ...tokens,
   };
+};
+
+export const forgotPassword = async (data: ForgotPasswordInput) => {
+  const normalizedEmail = data.email.trim().toLowerCase();
+  const user = await prisma.user.findUnique({
+    where: { email: normalizedEmail },
+  });
+
+  if (user && !user.deletedAt) {
+    const token = await createPasswordResetToken(user.id);
+    const resetUrl = `${env.FRONTEND_URL}/reset-password?token=${encodeURIComponent(token)}`;
+    await sendPasswordResetEmail({
+      to: user.email,
+      name: user.name,
+      resetUrl,
+    });
+  }
+
+  return {
+    message:
+      "If an account exists for this email, a password reset link has been sent.",
+  };
+};
+
+export const resetPassword = async (data: ResetPasswordInput) => {
+  const userId = await consumePasswordResetToken(data.token);
+  if (!userId) {
+    throw new AppError(400, "The password reset link is invalid or has expired.");
+  }
+
+  const passwordHash = await hashPassword(data.password);
+  const user = await prisma.user.update({
+    where: { id: userId },
+    data: { passwordHash, authProvider: "LOCAL" },
+    select: { id: true },
+  });
+
+  await prisma.refreshToken.updateMany({
+    where: { userId: user.id, revokedAt: null },
+    data: { revokedAt: new Date() },
+  });
 };
 
 export const refreshAccessToken = async (refreshToken: string) => {

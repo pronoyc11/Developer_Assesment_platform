@@ -155,3 +155,41 @@ export const sendRecruiterApplicationDecisionEmail = async (input: {
   const html = `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;"><h2>Developer Assessment Platform</h2><p>Hello ${escapeHtml(input.name)},</p><p>Your recruiter application has been <strong>${decision}</strong>.</p>${input.approved ? "<p>You can now sign in and access recruiter authoring features.</p>" : "<p>Your account remains a candidate account. You may contact the platform administrator if you need more information.</p>"}<p>Thank you.</p></div>`;
   await transporter.sendMail({ from: mailConfig.from, to: input.to, subject, text, html });
 };
+
+export const sendPasswordResetEmail = async (input: {
+  to: string;
+  name: string;
+  resetUrl: string;
+}): Promise<void> => {
+  if (!env.SMTP_PASSWORD || !env.SMTP_USER) {
+    throw new AppError(503, "Email delivery service is currently unavailable.");
+  }
+
+  const subject = "Reset your Developer Assessment Platform password";
+  const text = [
+    `Hello ${input.name},`,
+    "",
+    "We received a request to reset your password.",
+    `Reset your password: ${input.resetUrl}`,
+    "",
+    "This link expires in 15 minutes and can only be used once.",
+    "If you did not request this, you can ignore this email.",
+  ].join("\n");
+  const html = `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;"><h2>Developer Assessment Platform</h2><p>Hello ${escapeHtml(input.name)},</p><p>We received a request to reset your password.</p><p><a href="${escapeHtml(input.resetUrl)}" style="display:inline-block;padding:12px 18px;background:#0891b2;color:#fff;text-decoration:none;border-radius:6px;">Reset password</a></p><p>This link expires in <strong>15 minutes</strong> and can only be used once.</p><p>If you did not request this, you can ignore this email.</p></div>`;
+
+  try {
+    await transporter.sendMail({
+      from: mailConfig.from,
+      to: input.to,
+      subject,
+      text,
+      html,
+    });
+  } catch (error) {
+    console.error(
+      "Failed to send password reset email:",
+      error instanceof Error ? error.message : "Unknown error",
+    );
+    throw new AppError(502, "Failed to deliver the password reset email.");
+  }
+};
