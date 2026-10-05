@@ -249,16 +249,20 @@ const processSuccessfulSession = async (session: Stripe.Checkout.Session) => {
         }
         return { received: true, processed: true };
       },
-      { isolationLevel: Prisma.TransactionIsolationLevel.Serializable },
+      {
+        isolationLevel: Prisma.TransactionIsolationLevel.Serializable,
+        maxWait: 10000,
+        timeout: 15000,
+      },
     )
     .catch((error: unknown) => {
       if (
         error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === "P2034"
+        (error.code === "P2034" || error.code === "P2028")
       ) {
         throw new AppError(
           409,
-          "Payment event is being processed. Retry webhook delivery.",
+          "Payment event could not complete yet. Retry webhook delivery.",
         );
       }
       throw error;
