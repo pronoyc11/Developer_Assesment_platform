@@ -420,10 +420,6 @@ export const submitAttempt = async (
           attempt.assessment.durationMinutes,
         );
         console.log(attempt.assessment.durationMinutes);
-        if (!deadline || deadline <= now) {
-          throw new AppError(410, "Attempt time limit has expired.");
-        }
-
         const itemById = new Map(
           attempt.assessment.items.map((item) => [item.id, item]),
         );
