@@ -8009,7 +8009,22 @@
             "header": [],
             "url": "{{baseUrl}}/users/invited-candidates?page=1&limit=10&search=alex&sortOrder=asc",
             "description": "Approved recruiter only. Lists active, email-verified candidates who have at least one non-deleted invitation from the authenticated recruiter. Supports pagination and name/email search."
-          }
+          },
+          "response": [
+            {
+              "name": "List invited candidates — sample",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": "{{baseUrl}}/users/invited-candidates?page=1&limit=10&search=alex&sortOrder=asc"
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Invited candidates retrieved successfully.\",\n  \"data\": {\n    \"candidates\": [\n      {\n        \"id\": \"3e26f756-dc74-47ca-9475-fb32c3bc3f56\",\n        \"name\": \"Alex Johnson\",\n        \"email\": \"alex@example.com\",\n        \"avatarUrl\": null,\n        \"createdAt\": \"2026-10-08T09:30:00.000Z\"\n      }\n    ],\n    \"pagination\": {\n      \"page\": 1,\n      \"limit\": 10,\n      \"total\": 1,\n      \"totalPages\": 1,\n      \"hasNextPage\": false,\n      \"hasPreviousPage\": false\n    }\n  }\n}"
+            }
+          ]
         },
         {
           "name": "Get invited candidate status",
@@ -8018,7 +8033,22 @@
             "header": [],
             "url": "{{baseUrl}}/users/invited-candidates/3e26f756-dc74-47ca-9475-fb32c3bc3f56",
             "description": "Approved recruiter only. Returns the candidate profile and each invitation from the authenticated recruiter, including acceptance status, attempt status, score, and evaluated pass/fail result."
-          }
+          },
+          "response": [
+            {
+              "name": "Get invited candidate status — sample",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": "{{baseUrl}}/users/invited-candidates/3e26f756-dc74-47ca-9475-fb32c3bc3f56"
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Invited candidate details retrieved successfully.\",\n  \"data\": {\n    \"id\": \"3e26f756-dc74-47ca-9475-fb32c3bc3f56\",\n    \"name\": \"Alex Johnson\",\n    \"email\": \"alex@example.com\",\n    \"avatarUrl\": null,\n    \"createdAt\": \"2026-10-08T09:30:00.000Z\",\n    \"invitations\": [\n      {\n        \"id\": \"7f190523-de3d-4a9e-a38e-16833240829d\",\n        \"status\": \"ACCEPTED\",\n        \"createdAt\": \"2026-10-08T10:00:00.000Z\",\n        \"acceptedAt\": \"2026-10-08T10:05:00.000Z\",\n        \"expiresAt\": \"2026-10-15T10:00:00.000Z\",\n        \"assessment\": {\n          \"id\": \"4d6a8359-8b80-416f-bf38-be6140dc7333\",\n          \"title\": \"Frontend Engineering Assessment\",\n          \"passingScore\": 70,\n          \"durationMinutes\": 60\n        },\n        \"attempt\": {\n          \"id\": \"02b52e37-93af-4ba1-b111-25fad28603be\",\n          \"status\": \"EVALUATED\",\n          \"startedAt\": \"2026-10-08T10:10:00.000Z\",\n          \"submittedAt\": \"2026-10-08T10:45:00.000Z\",\n          \"evaluatedAt\": \"2026-10-08T11:00:00.000Z\",\n          \"totalScore\": 84,\n          \"maxScore\": 100,\n          \"passed\": true\n        }\n      }\n    ]\n  }\n}"
+            }
+          ]
         },
         {
           "name": "List attended or passed candidates",
