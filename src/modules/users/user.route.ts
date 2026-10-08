@@ -10,6 +10,8 @@ import {
   updateProfile,
   listCandidates,
   getCandidate,
+  listInvitedCandidates,
+  getInvitedCandidate,
 } from "./user.controller";
 import { candidateIdParamsSchema, changePasswordSchema, listCandidatesQuerySchema, updateProfileSchema } from "./user.validation";
 
@@ -17,6 +19,8 @@ const router = Router();
 
 router.get("/candidates", authenticate, requireRoles("RECRUITER"), validate(listCandidatesQuerySchema, "query"), listCandidates);
 router.get("/candidates/:id", authenticate, requireRoles("RECRUITER"), validate(candidateIdParamsSchema, "params"), getCandidate);
+router.get("/invited-candidates", authenticate, requireRoles("RECRUITER"), validate(listCandidatesQuerySchema, "query"), listInvitedCandidates);
+router.get("/invited-candidates/:id", authenticate, requireRoles("RECRUITER"), validate(candidateIdParamsSchema, "params"), getInvitedCandidate);
 
 router.get("/me", authenticate, getProfile);
 router.patch("/me", authenticate, validate(updateProfileSchema), updateProfile);

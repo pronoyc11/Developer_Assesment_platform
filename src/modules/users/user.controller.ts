@@ -73,3 +73,19 @@ export const getCandidate = catchAsync(async (req: Request, res: Response) => {
   const candidate = await userService.getCandidate(candidateId);
   return sendSuccess(res, "Candidate retrieved successfully.", candidate, 200);
 });
+
+export const listInvitedCandidates = catchAsync(async (req: Request, res: Response) => {
+  const recruiterId = req.user?.id;
+  if (!recruiterId) throw new AppError(401, "Authentication is required.");
+  const candidates = await userService.listInvitedCandidates(recruiterId, req.query as never);
+  return sendSuccess(res, "Invited candidates retrieved successfully.", candidates, 200);
+});
+
+export const getInvitedCandidate = catchAsync(async (req: Request, res: Response) => {
+  const recruiterId = req.user?.id;
+  const candidateId = req.params.id;
+  if (!recruiterId) throw new AppError(401, "Authentication is required.");
+  if (!candidateId || Array.isArray(candidateId)) throw new AppError(400, "Candidate ID is required.");
+  const candidate = await userService.getInvitedCandidate(recruiterId, candidateId);
+  return sendSuccess(res, "Invited candidate details retrieved successfully.", candidate, 200);
+});

@@ -189,3 +189,100 @@ export const getCandidate = async (candidateId: string) => {
   if (!candidate) throw new AppError(404, "Candidate not found.");
   return candidate;
 };
+
+export const listInvitedCandidates = async (recruiterId: string, query: ListCandidatesQuery) => {
+  const { page, limit, skip } = getPagination(query);
+  const where = {
+    role: "CANDIDATE" as const,
+    status: "ACTIVE" as const,
+    emailVerified: true,
+    deletedAt: null,
+    invitations: {
+      some: {
+        deletedAt: null,
+        assessment: { recruiterId, deletedAt: null },
+      },
+    },
+    ...(query.search && {
+      OR: [
+        { name: { contains: query.search, mode: "insensitive" as const } },
+        { email: { contains: query.search, mode: "insensitive" as const } },
+      ],
+    }),
+  };
+  const [candidates, total] = await prisma.$transaction([
+    prisma.user.findMany({
+      where,
+      select: { id: true, name: true, email: true, avatarUrl: true, createdAt: true },
+      orderBy: { name: query.sortOrder },
+      skip,
+      take: limit,
+    }),
+    prisma.user.count({ where }),
+  ]);
+  return { candidates, pagination: getPaginationMeta(page, limit, total) };
+};
+
+export const getInvitedCandidate = async (recruiterId: string, candidateId: string) => {
+  const candidate = await prisma.user.findFirst({
+    where: {
+      id: candidateId,
+      role: "CANDIDATE",
+      status: "ACTIVE",
+      emailVerified: true,
+      deletedAt: null,
+      invitations: {
+        some: { deletedAt: null, assessment: { recruiterId, deletedAt: null } },
+      },
+    },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      avatarUrl: true,
+      createdAt: true,
+      invitations: {
+        where: { deletedAt: null, assessment: { recruiterId, deletedAt: null } },
+        orderBy: { createdAt: "desc" },
+        select: {
+          id: true,
+          status: true,
+          createdAt: true,
+          acceptedAt: true,
+          expiresAt: true,
+          assessment: {
+            select: { id: true, title: true, passingScore: true, durationMinutes: true },
+          },
+          attempt: {
+            select: {
+              id: true,
+              status: true,
+              startedAt: true,
+              submittedAt: true,
+              evaluatedAt: true,
+              totalScore: true,
+              maxScore: true,
+            },
+          },
+        },
+      },
+    },
+  });
+  if (!candidate) throw new AppError(404, "Invited candidate not found.");
+  return {
+    ...candidate,
+    invitations: candidate.invitations.map((invitation) => ({
+      ...invitation,
+      attempt: invitation.attempt
+        ? {
+            ...invitation.attempt,
+            passed:
+              invitation.attempt.status === "EVALUATED" &&
+              invitation.attempt.maxScore > 0 &&
+              (invitation.attempt.totalScore / invitation.attempt.maxScore) * 100 >=
+                invitation.assessment.passingScore,
+          }
+        : null,
+    })),
+  };
+};
