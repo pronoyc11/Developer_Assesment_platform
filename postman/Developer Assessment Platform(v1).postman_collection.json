@@ -7938,7 +7938,7 @@
     },
     {
       "name": "Recently added APIs",
-      "description": "Requests added for password recovery, candidate discovery, assessment attendance/pass reporting, invitation acceptance by ID, attempt cancellation, and recruiter rejection.",
+      "description": "Requests added for password recovery, candidate discovery, invited-candidate status reporting, assessment attendance/pass reporting, invitation acceptance by ID, attempt cancellation, and recruiter rejection.",
       "auth": {
         "type": "bearer",
         "bearer": [
@@ -8000,6 +8000,24 @@
             "header": [],
             "url": "{{baseUrl}}/users/candidates/3e26f756-dc74-47ca-9475-fb32c3bc3f56",
             "description": "Approved recruiter only. Retrieves the eligible candidate profile by UUID."
+          }
+        },
+        {
+          "name": "List invited candidates",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/users/invited-candidates?page=1&limit=10&search=alex&sortOrder=asc",
+            "description": "Approved recruiter only. Lists active, email-verified candidates who have at least one non-deleted invitation from the authenticated recruiter. Supports pagination and name/email search."
+          }
+        },
+        {
+          "name": "Get invited candidate status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/users/invited-candidates/3e26f756-dc74-47ca-9475-fb32c3bc3f56",
+            "description": "Approved recruiter only. Returns the candidate profile and each invitation from the authenticated recruiter, including acceptance status, attempt status, score, and evaluated pass/fail result."
           }
         },
         {
