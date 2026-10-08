@@ -7965,7 +7965,18 @@
             },
             "url": "{{baseUrl}}/auth/forgot-password",
             "description": "Public endpoint. Sends a 15-minute password reset link when the email belongs to an active account. The response is intentionally generic."
-          }
+          },
+          "response": [
+            {
+              "name": "Forgot password — sample",
+              "originalRequest": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "url": "{{baseUrl}}/auth/forgot-password" },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"If an account exists for this email, a password reset link has been sent.\",\n  \"data\": null\n}"
+            }
+          ]
         },
         {
           "name": "Reset password",
@@ -7982,7 +7993,18 @@
             },
             "url": "{{baseUrl}}/auth/reset-password",
             "description": "Public endpoint. Consumes the single-use reset token and revokes existing refresh sessions."
-          }
+          },
+          "response": [
+            {
+              "name": "Reset password — sample",
+              "originalRequest": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "url": "{{baseUrl}}/auth/reset-password" },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Password reset successfully.\",\n  \"data\": null\n}"
+            }
+          ]
         },
         {
           "name": "List candidates for invitation",
@@ -7991,7 +8013,18 @@
             "header": [],
             "url": "{{baseUrl}}/users/candidates?page=1&limit=10&search=alex&sortOrder=asc",
             "description": "Approved recruiter only. Lists active, email-verified candidates with pagination and name/email search."
-          }
+          },
+          "response": [
+            {
+              "name": "List candidates for invitation — sample",
+              "originalRequest": { "method": "GET", "header": [], "url": "{{baseUrl}}/users/candidates?page=1&limit=10&search=alex&sortOrder=asc" },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Candidates retrieved successfully.\",\n  \"data\": {\n    \"candidates\": [{\n      \"id\": \"3e26f756-dc74-47ca-9475-fb32c3bc3f56\",\n      \"name\": \"Alex Johnson\",\n      \"email\": \"alex@example.com\",\n      \"avatarUrl\": null,\n      \"createdAt\": \"2026-10-08T09:30:00.000Z\"\n    }],\n    \"pagination\": {\n      \"page\": 1,\n      \"limit\": 10,\n      \"total\": 1,\n      \"totalPages\": 1,\n      \"hasNextPage\": false,\n      \"hasPreviousPage\": false\n    }\n  }\n}"
+            }
+          ]
         },
         {
           "name": "Get candidate profile for invitation",
@@ -8000,7 +8033,18 @@
             "header": [],
             "url": "{{baseUrl}}/users/candidates/3e26f756-dc74-47ca-9475-fb32c3bc3f56",
             "description": "Approved recruiter only. Retrieves the eligible candidate profile by UUID."
-          }
+          },
+          "response": [
+            {
+              "name": "Get candidate profile for invitation — sample",
+              "originalRequest": { "method": "GET", "header": [], "url": "{{baseUrl}}/users/candidates/3e26f756-dc74-47ca-9475-fb32c3bc3f56" },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Candidate retrieved successfully.\",\n  \"data\": {\n    \"id\": \"3e26f756-dc74-47ca-9475-fb32c3bc3f56\",\n    \"name\": \"Alex Johnson\",\n    \"email\": \"alex@example.com\",\n    \"avatarUrl\": null,\n    \"createdAt\": \"2026-10-08T09:30:00.000Z\"\n  }\n}"
+            }
+          ]
         },
         {
           "name": "List invited candidates",
@@ -8057,7 +8101,18 @@
             "header": [],
             "url": "{{baseUrl}}/assessments/4d6a8359-8b80-416f-bf38-be6140dc7333/candidates?page=1&limit=10&search=alex&kind=ATTENDED",
             "description": "Approved owner-recruiter only. Use kind=ATTENDED or kind=PASSED to report candidates for an assessment."
-          }
+          },
+          "response": [
+            {
+              "name": "List attended or passed candidates — sample",
+              "originalRequest": { "method": "GET", "header": [], "url": "{{baseUrl}}/assessments/4d6a8359-8b80-416f-bf38-be6140dc7333/candidates?page=1&limit=10&search=alex&kind=ATTENDED" },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Assessment candidates retrieved successfully.\",\n  \"data\": {\n    \"candidates\": [{\n      \"candidateId\": \"3e26f756-dc74-47ca-9475-fb32c3bc3f56\",\n      \"candidateName\": \"Alex Johnson\",\n      \"candidateEmail\": \"alex@example.com\",\n      \"attemptId\": \"02b52e37-93af-4ba1-b111-25fad28603be\",\n      \"attemptStatus\": \"EVALUATED\",\n      \"totalScore\": 84,\n      \"maxScore\": 100,\n      \"passed\": true\n    }],\n    \"pagination\": {\n      \"page\": 1,\n      \"limit\": 10,\n      \"total\": 1,\n      \"totalPages\": 1,\n      \"hasNextPage\": false,\n      \"hasPreviousPage\": false\n    }\n  }\n}"
+            }
+          ]
         },
         {
           "name": "Accept invitation by ID",
@@ -8066,7 +8121,18 @@
             "header": [],
             "url": "{{baseUrl}}/invitations/id/7f190523-de3d-4a9e-a38e-16833240829d/accept",
             "description": "Candidate only. Accepts a pending, unexpired invitation selected from the candidate invitation list."
-          }
+          },
+          "response": [
+            {
+              "name": "Accept invitation by ID — sample",
+              "originalRequest": { "method": "POST", "header": [], "url": "{{baseUrl}}/invitations/id/7f190523-de3d-4a9e-a38e-16833240829d/accept" },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Invitation accepted successfully.\",\n  \"data\": {\n    \"id\": \"7f190523-de3d-4a9e-a38e-16833240829d\",\n    \"status\": \"ACCEPTED\",\n    \"acceptedAt\": \"2026-10-08T10:05:00.000Z\"\n  }\n}"
+            }
+          ]
         },
         {
           "name": "Cancel attempt with current answers",
@@ -8082,7 +8148,18 @@
             },
             "url": "{{baseUrl}}/attempts/02b52e37-93af-4ba1-b111-25fad28603be/cancel",
             "description": "Candidate only. Cancels an in-progress attempt and optionally stores answers currently on screen. Use an empty answers array when there are no answers."
-          }
+          },
+          "response": [
+            {
+              "name": "Cancel attempt with current answers — sample",
+              "originalRequest": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "url": "{{baseUrl}}/attempts/02b52e37-93af-4ba1-b111-25fad28603be/cancel" },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Attempt cancelled successfully.\",\n  \"data\": {\n    \"id\": \"02b52e37-93af-4ba1-b111-25fad28603be\",\n    \"status\": \"CANCELLED\",\n    \"submittedAt\": \"2026-10-08T10:45:00.000Z\"\n  }\n}"
+            }
+          ]
         },
         {
           "name": "Reject recruiter application",
@@ -8091,7 +8168,18 @@
             "header": [],
             "url": "{{baseUrl}}/admin/recruiter-applications/53d87986-4f56-4270-8d1e-b69e3654b951/reject",
             "description": "Admin only. Rejects a pending recruiter application, returns the applicant to candidate status, records an audit event, and sends a rejection email."
-          }
+          },
+          "response": [
+            {
+              "name": "Reject recruiter application — sample",
+              "originalRequest": { "method": "PATCH", "header": [], "url": "{{baseUrl}}/admin/recruiter-applications/53d87986-4f56-4270-8d1e-b69e3654b951/reject" },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Recruiter application rejected successfully.\",\n  \"data\": {\n    \"id\": \"53d87986-4f56-4270-8d1e-b69e3654b951\",\n    \"role\": \"CANDIDATE\",\n    \"recruiterStatus\": \"REJECTED\"\n  }\n}"
+            }
+          ]
         }
       ]
     }
