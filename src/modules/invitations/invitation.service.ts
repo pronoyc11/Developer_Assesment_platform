@@ -183,7 +183,11 @@ export const createInvitation = async (
           },
         };
       },
-      { isolationLevel: Prisma.TransactionIsolationLevel.Serializable },
+      {
+        isolationLevel: Prisma.TransactionIsolationLevel.Serializable,
+        maxWait: 10000,
+        timeout: 15000,
+      },
     )
     .catch((error: unknown) => throwInvitationConflict(error));
   const { invitation, emailContext } = result;
