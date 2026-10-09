@@ -70,7 +70,7 @@ const submissionIdParamsSchema = z.object({
 const evaluateSubmissionSchema = z
   .object({
     score: z.number().int().min(0).max(1000),
-    feedback: z.string().trim().max(10000).optional(),
+    feedback: z.string().trim().min(1, "Feedback is required").max(10000),
   })
   .strict();
 
