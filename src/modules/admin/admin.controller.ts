@@ -90,6 +90,9 @@ export const updateUserStatus = catchAsync(
     if (!userId || Array.isArray(userId)) {
       throw new AppError(400, "User ID is required.");
     }
+    if (req.user?.id === userId) {
+      throw new AppError(403, "You cannot change your own account status.");
+    }
     const user = await adminService.updateUserStatus(userId, req.body.status);
     await writeAuditEvent({
       actorId: req.user?.id ?? null,
