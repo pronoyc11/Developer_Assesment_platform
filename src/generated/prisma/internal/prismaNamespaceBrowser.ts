@@ -172,6 +172,8 @@ export const InvitationScalarFieldEnum = {
   status: 'status',
   acceptedAt: 'acceptedAt',
   usedAt: 'usedAt',
+  rejectedAt: 'rejectedAt',
+  rejectionReason: 'rejectionReason',
   expiresAt: 'expiresAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',

@@ -1,7 +1,10 @@
 import crypto from "node:crypto";
 import { env } from "../../config/env";
 import { Prisma } from "../../generated/prisma/client";
-import { sendAssessmentInvitationEmail } from "../../lib/mailer";
+import {
+  sendAssessmentInvitationEmail,
+  sendAssessmentRejectionEmail,
+} from "../../lib/mailer";
 import { prisma } from "../../lib/prisma";
 import { AppError } from "../../utils/appError";
 import { getPagination, getPaginationMeta } from "../../utils/pagination";
@@ -23,6 +26,8 @@ const invitationPublicSelect = {
   expiresAt: true,
   acceptedAt: true,
   usedAt: true,
+  rejectedAt: true,
+  rejectionReason: true,
   createdAt: true,
 } satisfies Prisma.InvitationSelect;
 
@@ -148,6 +153,8 @@ export const createInvitation = async (
           expiresAt,
           acceptedAt: null,
           usedAt: null,
+          rejectedAt: null,
+          rejectionReason: null,
           deletedAt: null,
         };
         const createdInvitation = existing
@@ -457,6 +464,97 @@ export const acceptInvitationById = async (candidateId: string, invitationId: st
   const changed = await prisma.invitation.updateMany({ where: { id: invitationId, candidateId, status: "PENDING", deletedAt: null, expiresAt: { gt: now } }, data: { token: hashToken(rawToken), status: "ACCEPTED", acceptedAt: now } });
   if (changed.count !== 1) throw new AppError(409, "Invitation changed and can no longer be accepted.");
   return { id: invitation.id, status: "ACCEPTED" as const, acceptedAt: now, expiresAt: invitation.expiresAt, token: rawToken, assessment: { title: invitation.assessment.title } };
+};
+
+export const rejectInvitation = async (
+  candidateId: string,
+  invitationId: string,
+  data: { reason: string },
+) => {
+  const reason = data.reason.trim();
+  if (!reason) throw new AppError(400, "Rejection reason is required.");
+
+  const now = new Date();
+  const invitation = await prisma.invitation.findFirst({
+    where: {
+      id: invitationId,
+      candidateId,
+      deletedAt: null,
+    },
+    select: {
+      id: true,
+      status: true,
+      expiresAt: true,
+      assessment: {
+        select: {
+          title: true,
+          deletedAt: true,
+          recruiter: {
+            select: {
+              name: true,
+              email: true,
+              recruiterProfile: { select: { companyName: true } },
+            },
+          },
+        },
+      },
+      candidate: { select: { name: true } },
+    },
+  });
+  if (!invitation) throw new AppError(404, "Invitation not found.");
+  if (invitation.status !== "PENDING") {
+    throw new AppError(409, "Only pending invitations can be rejected.");
+  }
+  if (!invitation.expiresAt || invitation.expiresAt <= now) {
+    throw new AppError(410, "Invitation has expired.");
+  }
+  if (invitation.assessment.deletedAt) {
+    throw new AppError(409, "This assessment is no longer available.");
+  }
+
+  const changed = await prisma.invitation.updateMany({
+    where: {
+      id: invitationId,
+      candidateId,
+      status: "PENDING",
+      deletedAt: null,
+      expiresAt: { gt: now },
+    },
+    data: {
+      status: "REJECTED",
+      rejectedAt: now,
+      rejectionReason: reason,
+    },
+  });
+  if (changed.count !== 1) {
+    throw new AppError(409, "Invitation changed and can no longer be rejected.");
+  }
+
+  try {
+    await sendAssessmentRejectionEmail({
+      to: invitation.assessment.recruiter.email,
+      candidateName: invitation.candidate.name,
+      assessmentTitle: invitation.assessment.title,
+      companyName: invitation.assessment.recruiter.recruiterProfile?.companyName ?? null,
+      reason,
+    });
+  } catch (error) {
+    await prisma.invitation
+      .updateMany({
+        where: { id: invitationId, candidateId, status: "REJECTED" },
+        data: { status: "PENDING", rejectedAt: null, rejectionReason: null },
+      })
+      .catch(() => undefined);
+    if (error instanceof AppError) throw error;
+    throw new AppError(502, "Failed to deliver the rejection notification.");
+  }
+
+  return {
+    id: invitation.id,
+    status: "REJECTED" as const,
+    rejectedAt: now,
+    rejectionReason: reason,
+  };
 };
 
 export const deleteInvitation = async (

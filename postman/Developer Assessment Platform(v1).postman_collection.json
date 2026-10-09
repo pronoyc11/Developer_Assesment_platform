@@ -8135,6 +8135,42 @@
           ]
         },
         {
+          "name": "Reject invitation by ID",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"The assessment timeline does not fit my current availability.\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/invitations/id/7f190523-de3d-4a9e-a38e-16833240829d/reject",
+            "description": "Candidate only. Rejects a pending, unexpired invitation, stores the required reason, and emails the recruiter."
+          },
+          "response": [
+            {
+              "name": "Reject invitation by ID — sample",
+              "originalRequest": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reason\": \"The assessment timeline does not fit my current availability.\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": "{{baseUrl}}/invitations/id/7f190523-de3d-4a9e-a38e-16833240829d/reject"
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Invitation rejected successfully.\",\n  \"data\": {\n    \"id\": \"7f190523-de3d-4a9e-a38e-16833240829d\",\n    \"status\": \"REJECTED\",\n    \"rejectedAt\": \"2026-10-09T12:00:00.000Z\",\n    \"rejectionReason\": \"The assessment timeline does not fit my current availability.\"\n  }\n}"
+            }
+          ]
+        },
+        {
           "name": "Cancel attempt with current answers",
           "request": {
             "method": "POST",

@@ -33,6 +33,8 @@ export type InvitationMinAggregateOutputType = {
   status: $Enums.InvitationStatus | null
   acceptedAt: Date | null
   usedAt: Date | null
+  rejectedAt: Date | null
+  rejectionReason: string | null
   expiresAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -48,6 +50,8 @@ export type InvitationMaxAggregateOutputType = {
   status: $Enums.InvitationStatus | null
   acceptedAt: Date | null
   usedAt: Date | null
+  rejectedAt: Date | null
+  rejectionReason: string | null
   expiresAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -63,6 +67,8 @@ export type InvitationCountAggregateOutputType = {
   status: number
   acceptedAt: number
   usedAt: number
+  rejectedAt: number
+  rejectionReason: number
   expiresAt: number
   createdAt: number
   updatedAt: number
@@ -80,6 +86,8 @@ export type InvitationMinAggregateInputType = {
   status?: true
   acceptedAt?: true
   usedAt?: true
+  rejectedAt?: true
+  rejectionReason?: true
   expiresAt?: true
   createdAt?: true
   updatedAt?: true
@@ -95,6 +103,8 @@ export type InvitationMaxAggregateInputType = {
   status?: true
   acceptedAt?: true
   usedAt?: true
+  rejectedAt?: true
+  rejectionReason?: true
   expiresAt?: true
   createdAt?: true
   updatedAt?: true
@@ -110,6 +120,8 @@ export type InvitationCountAggregateInputType = {
   status?: true
   acceptedAt?: true
   usedAt?: true
+  rejectedAt?: true
+  rejectionReason?: true
   expiresAt?: true
   createdAt?: true
   updatedAt?: true
@@ -198,6 +210,8 @@ export type InvitationGroupByOutputType = {
   status: $Enums.InvitationStatus
   acceptedAt: Date | null
   usedAt: Date | null
+  rejectedAt: Date | null
+  rejectionReason: string | null
   expiresAt: Date | null
   createdAt: Date
   updatedAt: Date
@@ -234,6 +248,8 @@ export type InvitationWhereInput = {
   status?: Prisma.EnumInvitationStatusFilter<"Invitation"> | $Enums.InvitationStatus
   acceptedAt?: Prisma.DateTimeNullableFilter<"Invitation"> | Date | string | null
   usedAt?: Prisma.DateTimeNullableFilter<"Invitation"> | Date | string | null
+  rejectedAt?: Prisma.DateTimeNullableFilter<"Invitation"> | Date | string | null
+  rejectionReason?: Prisma.StringNullableFilter<"Invitation"> | string | null
   expiresAt?: Prisma.DateTimeNullableFilter<"Invitation"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Invitation"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Invitation"> | Date | string
@@ -252,6 +268,8 @@ export type InvitationOrderByWithRelationInput = {
   status?: Prisma.SortOrder
   acceptedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   usedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  rejectedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  rejectionReason?: Prisma.SortOrderInput | Prisma.SortOrder
   expiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -274,6 +292,8 @@ export type InvitationWhereUniqueInput = Prisma.AtLeast<{
   status?: Prisma.EnumInvitationStatusFilter<"Invitation"> | $Enums.InvitationStatus
   acceptedAt?: Prisma.DateTimeNullableFilter<"Invitation"> | Date | string | null
   usedAt?: Prisma.DateTimeNullableFilter<"Invitation"> | Date | string | null
+  rejectedAt?: Prisma.DateTimeNullableFilter<"Invitation"> | Date | string | null
+  rejectionReason?: Prisma.StringNullableFilter<"Invitation"> | string | null
   expiresAt?: Prisma.DateTimeNullableFilter<"Invitation"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Invitation"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Invitation"> | Date | string
@@ -292,6 +312,8 @@ export type InvitationOrderByWithAggregationInput = {
   status?: Prisma.SortOrder
   acceptedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   usedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  rejectedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  rejectionReason?: Prisma.SortOrderInput | Prisma.SortOrder
   expiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -313,6 +335,8 @@ export type InvitationScalarWhereWithAggregatesInput = {
   status?: Prisma.EnumInvitationStatusWithAggregatesFilter<"Invitation"> | $Enums.InvitationStatus
   acceptedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Invitation"> | Date | string | null
   usedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Invitation"> | Date | string | null
+  rejectedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Invitation"> | Date | string | null
+  rejectionReason?: Prisma.StringNullableWithAggregatesFilter<"Invitation"> | string | null
   expiresAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Invitation"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Invitation"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Invitation"> | Date | string
@@ -326,6 +350,8 @@ export type InvitationCreateInput = {
   status?: $Enums.InvitationStatus
   acceptedAt?: Date | string | null
   usedAt?: Date | string | null
+  rejectedAt?: Date | string | null
+  rejectionReason?: string | null
   expiresAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -344,6 +370,8 @@ export type InvitationUncheckedCreateInput = {
   status?: $Enums.InvitationStatus
   acceptedAt?: Date | string | null
   usedAt?: Date | string | null
+  rejectedAt?: Date | string | null
+  rejectionReason?: string | null
   expiresAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -358,6 +386,8 @@ export type InvitationUpdateInput = {
   status?: Prisma.EnumInvitationStatusFieldUpdateOperationsInput | $Enums.InvitationStatus
   acceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -376,6 +406,8 @@ export type InvitationUncheckedUpdateInput = {
   status?: Prisma.EnumInvitationStatusFieldUpdateOperationsInput | $Enums.InvitationStatus
   acceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -392,6 +424,8 @@ export type InvitationCreateManyInput = {
   status?: $Enums.InvitationStatus
   acceptedAt?: Date | string | null
   usedAt?: Date | string | null
+  rejectedAt?: Date | string | null
+  rejectionReason?: string | null
   expiresAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -405,6 +439,8 @@ export type InvitationUpdateManyMutationInput = {
   status?: Prisma.EnumInvitationStatusFieldUpdateOperationsInput | $Enums.InvitationStatus
   acceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -420,6 +456,8 @@ export type InvitationUncheckedUpdateManyInput = {
   status?: Prisma.EnumInvitationStatusFieldUpdateOperationsInput | $Enums.InvitationStatus
   acceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -455,6 +493,8 @@ export type InvitationCountOrderByAggregateInput = {
   status?: Prisma.SortOrder
   acceptedAt?: Prisma.SortOrder
   usedAt?: Prisma.SortOrder
+  rejectedAt?: Prisma.SortOrder
+  rejectionReason?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -470,6 +510,8 @@ export type InvitationMaxOrderByAggregateInput = {
   status?: Prisma.SortOrder
   acceptedAt?: Prisma.SortOrder
   usedAt?: Prisma.SortOrder
+  rejectedAt?: Prisma.SortOrder
+  rejectionReason?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -485,6 +527,8 @@ export type InvitationMinOrderByAggregateInput = {
   status?: Prisma.SortOrder
   acceptedAt?: Prisma.SortOrder
   usedAt?: Prisma.SortOrder
+  rejectedAt?: Prisma.SortOrder
+  rejectionReason?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -602,6 +646,8 @@ export type InvitationCreateWithoutAssessmentInput = {
   status?: $Enums.InvitationStatus
   acceptedAt?: Date | string | null
   usedAt?: Date | string | null
+  rejectedAt?: Date | string | null
+  rejectionReason?: string | null
   expiresAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -618,6 +664,8 @@ export type InvitationUncheckedCreateWithoutAssessmentInput = {
   status?: $Enums.InvitationStatus
   acceptedAt?: Date | string | null
   usedAt?: Date | string | null
+  rejectedAt?: Date | string | null
+  rejectionReason?: string | null
   expiresAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -663,6 +711,8 @@ export type InvitationScalarWhereInput = {
   status?: Prisma.EnumInvitationStatusFilter<"Invitation"> | $Enums.InvitationStatus
   acceptedAt?: Prisma.DateTimeNullableFilter<"Invitation"> | Date | string | null
   usedAt?: Prisma.DateTimeNullableFilter<"Invitation"> | Date | string | null
+  rejectedAt?: Prisma.DateTimeNullableFilter<"Invitation"> | Date | string | null
+  rejectionReason?: Prisma.StringNullableFilter<"Invitation"> | string | null
   expiresAt?: Prisma.DateTimeNullableFilter<"Invitation"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Invitation"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Invitation"> | Date | string
@@ -676,6 +726,8 @@ export type InvitationCreateWithoutAttemptInput = {
   status?: $Enums.InvitationStatus
   acceptedAt?: Date | string | null
   usedAt?: Date | string | null
+  rejectedAt?: Date | string | null
+  rejectionReason?: string | null
   expiresAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -693,6 +745,8 @@ export type InvitationUncheckedCreateWithoutAttemptInput = {
   status?: $Enums.InvitationStatus
   acceptedAt?: Date | string | null
   usedAt?: Date | string | null
+  rejectedAt?: Date | string | null
+  rejectionReason?: string | null
   expiresAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -722,6 +776,8 @@ export type InvitationUpdateWithoutAttemptInput = {
   status?: Prisma.EnumInvitationStatusFieldUpdateOperationsInput | $Enums.InvitationStatus
   acceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -739,6 +795,8 @@ export type InvitationUncheckedUpdateWithoutAttemptInput = {
   status?: Prisma.EnumInvitationStatusFieldUpdateOperationsInput | $Enums.InvitationStatus
   acceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -752,6 +810,8 @@ export type InvitationCreateWithoutCandidateInput = {
   status?: $Enums.InvitationStatus
   acceptedAt?: Date | string | null
   usedAt?: Date | string | null
+  rejectedAt?: Date | string | null
+  rejectionReason?: string | null
   expiresAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -768,6 +828,8 @@ export type InvitationUncheckedCreateWithoutCandidateInput = {
   status?: $Enums.InvitationStatus
   acceptedAt?: Date | string | null
   usedAt?: Date | string | null
+  rejectedAt?: Date | string | null
+  rejectionReason?: string | null
   expiresAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -809,6 +871,8 @@ export type InvitationCreateManyAssessmentInput = {
   status?: $Enums.InvitationStatus
   acceptedAt?: Date | string | null
   usedAt?: Date | string | null
+  rejectedAt?: Date | string | null
+  rejectionReason?: string | null
   expiresAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -822,6 +886,8 @@ export type InvitationUpdateWithoutAssessmentInput = {
   status?: Prisma.EnumInvitationStatusFieldUpdateOperationsInput | $Enums.InvitationStatus
   acceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -838,6 +904,8 @@ export type InvitationUncheckedUpdateWithoutAssessmentInput = {
   status?: Prisma.EnumInvitationStatusFieldUpdateOperationsInput | $Enums.InvitationStatus
   acceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -853,6 +921,8 @@ export type InvitationUncheckedUpdateManyWithoutAssessmentInput = {
   status?: Prisma.EnumInvitationStatusFieldUpdateOperationsInput | $Enums.InvitationStatus
   acceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -867,6 +937,8 @@ export type InvitationCreateManyCandidateInput = {
   status?: $Enums.InvitationStatus
   acceptedAt?: Date | string | null
   usedAt?: Date | string | null
+  rejectedAt?: Date | string | null
+  rejectionReason?: string | null
   expiresAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -880,6 +952,8 @@ export type InvitationUpdateWithoutCandidateInput = {
   status?: Prisma.EnumInvitationStatusFieldUpdateOperationsInput | $Enums.InvitationStatus
   acceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -896,6 +970,8 @@ export type InvitationUncheckedUpdateWithoutCandidateInput = {
   status?: Prisma.EnumInvitationStatusFieldUpdateOperationsInput | $Enums.InvitationStatus
   acceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -911,6 +987,8 @@ export type InvitationUncheckedUpdateManyWithoutCandidateInput = {
   status?: Prisma.EnumInvitationStatusFieldUpdateOperationsInput | $Enums.InvitationStatus
   acceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -928,6 +1006,8 @@ export type InvitationSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   status?: boolean
   acceptedAt?: boolean
   usedAt?: boolean
+  rejectedAt?: boolean
+  rejectionReason?: boolean
   expiresAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -946,6 +1026,8 @@ export type InvitationSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   status?: boolean
   acceptedAt?: boolean
   usedAt?: boolean
+  rejectedAt?: boolean
+  rejectionReason?: boolean
   expiresAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -963,6 +1045,8 @@ export type InvitationSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   status?: boolean
   acceptedAt?: boolean
   usedAt?: boolean
+  rejectedAt?: boolean
+  rejectionReason?: boolean
   expiresAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -980,13 +1064,15 @@ export type InvitationSelectScalar = {
   status?: boolean
   acceptedAt?: boolean
   usedAt?: boolean
+  rejectedAt?: boolean
+  rejectionReason?: boolean
   expiresAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   deletedAt?: boolean
 }
 
-export type InvitationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "assessmentId" | "candidateId" | "email" | "token" | "status" | "acceptedAt" | "usedAt" | "expiresAt" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["invitation"]>
+export type InvitationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "assessmentId" | "candidateId" | "email" | "token" | "status" | "acceptedAt" | "usedAt" | "rejectedAt" | "rejectionReason" | "expiresAt" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["invitation"]>
 export type InvitationInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   assessment?: boolean | Prisma.AssessmentDefaultArgs<ExtArgs>
   candidate?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1017,6 +1103,8 @@ export type $InvitationPayload<ExtArgs extends runtime.Types.Extensions.Internal
     status: $Enums.InvitationStatus
     acceptedAt: Date | null
     usedAt: Date | null
+    rejectedAt: Date | null
+    rejectionReason: string | null
     expiresAt: Date | null
     createdAt: Date
     updatedAt: Date
@@ -1455,6 +1543,8 @@ export interface InvitationFieldRefs {
   readonly status: Prisma.FieldRef<"Invitation", 'InvitationStatus'>
   readonly acceptedAt: Prisma.FieldRef<"Invitation", 'DateTime'>
   readonly usedAt: Prisma.FieldRef<"Invitation", 'DateTime'>
+  readonly rejectedAt: Prisma.FieldRef<"Invitation", 'DateTime'>
+  readonly rejectionReason: Prisma.FieldRef<"Invitation", 'String'>
   readonly expiresAt: Prisma.FieldRef<"Invitation", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"Invitation", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Invitation", 'DateTime'>

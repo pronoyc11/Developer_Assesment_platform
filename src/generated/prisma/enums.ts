@@ -68,7 +68,8 @@ export type AttemptStatus = (typeof AttemptStatus)[keyof typeof AttemptStatus]
 export const InvitationStatus = {
   PENDING: 'PENDING',
   ACCEPTED: 'ACCEPTED',
-  USED: 'USED'
+  USED: 'USED',
+  REJECTED: 'REJECTED'
 } as const
 
 export type InvitationStatus = (typeof InvitationStatus)[keyof typeof InvitationStatus]

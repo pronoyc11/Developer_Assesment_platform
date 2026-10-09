@@ -13,7 +13,7 @@ export const createInvitationSchema = z
 export const listInvitationsQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(100).default(10),
-  status: z.enum(["PENDING", "ACCEPTED", "USED"]).optional(),
+  status: z.enum(["PENDING", "ACCEPTED", "USED", "REJECTED"]).optional(),
   search: z.string().trim().max(255).optional(),
   sortBy: z
     .enum(["createdAt", "expiresAt", "status", "email"])
@@ -24,7 +24,7 @@ export const listInvitationsQuerySchema = z.object({
 export const listCandidateInvitationsQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(100).default(10),
-  status: z.enum(["PENDING", "ACCEPTED", "USED"]).optional(),
+  status: z.enum(["PENDING", "ACCEPTED", "USED", "REJECTED"]).optional(),
 });
 
 export const invitationIdParamsSchema = z.object({
@@ -35,8 +35,15 @@ export const invitationTokenParamsSchema = z.object({
   token: invitationTokenSchema,
 });
 
+export const rejectInvitationSchema = z
+  .object({
+    reason: z.string().trim().min(1, "Rejection reason is required.").max(5000),
+  })
+  .strict();
+
 export type CreateInvitationInput = z.infer<typeof createInvitationSchema>;
 export type ListInvitationsQuery = z.infer<typeof listInvitationsQuerySchema>;
 export type ListCandidateInvitationsQuery = z.infer<
   typeof listCandidateInvitationsQuerySchema
 >;
+export type RejectInvitationInput = z.infer<typeof rejectInvitationSchema>;

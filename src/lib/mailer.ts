@@ -136,6 +136,41 @@ export const sendAssessmentInvitationEmail = async (input: {
   }
 };
 
+export const sendAssessmentRejectionEmail = async (input: {
+  to: string;
+  candidateName: string;
+  assessmentTitle: string;
+  companyName: string | null;
+  reason: string;
+}): Promise<void> => {
+  if (!env.SMTP_PASSWORD || !env.SMTP_USER) {
+    throw new AppError(503, "Email delivery service is currently unavailable.");
+  }
+
+  const organization = input.companyName || "your recruiting team";
+  const subject = `Assessment invitation declined: ${input.assessmentTitle}`;
+  const text = [
+    `${input.candidateName} has declined the invitation to complete: ${input.assessmentTitle}`,
+    `Organization: ${organization}`,
+    `Reason: ${input.reason}`,
+  ].join("\n\n");
+  const html = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">
+      <h2>Assessment invitation declined</h2>
+      <p>${escapeHtml(input.candidateName)} declined the invitation for <strong>${escapeHtml(input.assessmentTitle)}</strong>.</p>
+      <p><strong>Reason provided:</strong></p>
+      <p>${escapeHtml(input.reason).replace(/\n/g, "<br />")}</p>
+    </div>
+  `;
+
+  try {
+    await transporter.sendMail({ from: mailConfig.from, to: input.to, subject, text, html });
+  } catch {
+    console.error("Assessment rejection email delivery failed.");
+    throw new AppError(502, "Failed to deliver the rejection notification.");
+  }
+};
+
 export const sendRecruiterApplicationDecisionEmail = async (input: {
   to: string;
   name: string;

@@ -8,12 +8,14 @@ import {
   deleteInvitation,
   getInvitation,
   listCandidateInvitations,
+  rejectInvitation,
   startAttempt,
 } from "./invitation.controller";
 import {
   invitationIdParamsSchema,
   invitationTokenParamsSchema,
   listCandidateInvitationsQuerySchema,
+  rejectInvitationSchema,
 } from "./invitation.validation";
 
 const router = Router();
@@ -37,6 +39,14 @@ router.post(
   requireRoles("CANDIDATE"),
   validate(invitationIdParamsSchema, "params"),
   acceptInvitationById,
+);
+router.post(
+  "/id/:id/reject",
+  authenticate,
+  requireRoles("CANDIDATE"),
+  validate(invitationIdParamsSchema, "params"),
+  validate(rejectInvitationSchema),
+  rejectInvitation,
 );
 router.post(
   "/:token/accept",

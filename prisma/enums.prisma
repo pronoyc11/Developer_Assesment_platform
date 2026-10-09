@@ -40,6 +40,7 @@ enum InvitationStatus {
   PENDING
   ACCEPTED
   USED
+  REJECTED
 }
 
 enum SubmissionStatus {
