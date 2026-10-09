@@ -1093,6 +1093,68 @@
           "response": []
         },
         {
+          "name": "Refresh token alias",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"PASTE_REFRESH_TOKEN\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/refresh-token",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "refresh-token"
+              ]
+            },
+            "description": "Alias of the refresh endpoint. Issues a new access token using a valid refresh token."
+          },
+          "response": [
+            {
+              "name": "Refresh token alias — sample",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"refreshToken\": \"PASTE_REFRESH_TOKEN\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": "{{baseUrl}}/auth/refresh-token"
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "cookie": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Access token refreshed successfully\",\n  \"data\": {\n    \"accessToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.sample-access-token\",\n    \"refreshToken\": \"sample-refresh-token\"\n  }\n}"
+            }
+          ]
+        },
+        {
           "name": "Logout",
           "request": {
             "method": "POST",
@@ -4216,6 +4278,73 @@
               ],
               "cookie": [],
               "body": "{\n  \"success\": true,\n  \"message\": \"Problem added to assessment.\",\n  \"data\": {\n    \"id\": \"0f8ea466-9b4b-4c41-870d-6deeed5eb73d\",\n    \"problemId\": \"72d06716-e5df-47a1-ab18-f62ac7d6c7aa\",\n    \"order\": 1,\n    \"title\": \"HTTP Protocol Fundamentals\",\n    \"question\": \"What does HTTP stand for?\",\n    \"type\": \"MCQ\",\n    \"options\": [\n      \"HyperText Transfer Protocol\",\n      \"HighText Transfer Protocol\",\n      \"Hyper Transfer Text Process\",\n      \"Host Transfer Protocol\"\n    ],\n    \"points\": 3,\n    \"correctAnswer\": \"HyperText Transfer Protocol\",\n    \"expectedAnswer\": null\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Add multiple problem snapshots",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    {\n      \"problemId\": \"72d06716-e5df-47a1-ab18-f62ac7d6c7aa\",\n      \"order\": 1\n    },\n    {\n      \"problemId\": \"ca970fb7-e6a6-4662-b86e-bc2e37475003\",\n      \"order\": 2\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/assessments/adae26b1-acdc-4853-a428-cf5536436827/items/bulk",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "assessments",
+                "adae26b1-acdc-4853-a428-cf5536436827",
+                "items",
+                "bulk"
+              ]
+            },
+            "description": "Adds multiple problem snapshots to an assessment in one request. Problem IDs and item orders must be unique."
+          },
+          "response": [
+            {
+              "name": "Add multiple problem snapshots — sample",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"items\": [\n    {\n      \"problemId\": \"72d06716-e5df-47a1-ab18-f62ac7d6c7aa\",\n      \"order\": 1\n    },\n    {\n      \"problemId\": \"ca970fb7-e6a6-4662-b86e-bc2e37475003\",\n      \"order\": 2\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": "{{baseUrl}}/assessments/adae26b1-acdc-4853-a428-cf5536436827/items/bulk"
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "cookie": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"2 problems added to assessment.\",\n  \"data\": [\n    {\n      \"id\": \"0f8ea466-9b4b-4c41-870d-6deeed5eb73d\",\n      \"problemId\": \"72d06716-e5df-47a1-ab18-f62ac7d6c7aa\",\n      \"order\": 1,\n      \"title\": \"HTTP Protocol Fundamentals\",\n      \"question\": \"What does HTTP stand for?\",\n      \"type\": \"MCQ\",\n      \"options\": [\n        \"HyperText Transfer Protocol\",\n        \"HighText Transfer Protocol\",\n        \"Hyper Transfer Text Process\",\n        \"Host Transfer Protocol\"\n      ],\n      \"points\": 3,\n      \"correctAnswer\": \"HyperText Transfer Protocol\",\n      \"expectedAnswer\": null\n    },\n    {\n      \"id\": \"1a9fb577-2d4c-4f89-ae59-8f0b2f5b9a11\",\n      \"problemId\": \"ca970fb7-e6a6-4662-b86e-bc2e37475003\",\n      \"order\": 2,\n      \"title\": \"Async JavaScript\",\n      \"question\": \"Explain how promises are settled.\",\n      \"type\": \"WRITTEN\",\n      \"options\": null,\n      \"points\": 5,\n      \"correctAnswer\": null,\n      \"expectedAnswer\": \"A promise is fulfilled or rejected once.\"\n    }\n  ]\n}"
             }
           ]
         },
