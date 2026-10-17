@@ -8345,6 +8345,68 @@
               "body": "{\n  \"success\": true,\n  \"message\": \"Recruiter application rejected successfully.\",\n  \"data\": {\n    \"id\": \"53d87986-4f56-4270-8d1e-b69e3654b951\",\n    \"role\": \"CANDIDATE\",\n    \"recruiterStatus\": \"REJECTED\"\n  }\n}"
             }
           ]
+        },
+        {
+          "name": "Generate AI problem draft",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"topic\": \"React state management\",\n  \"type\": \"MCQ\",\n  \"difficulty\": \"MEDIUM\",\n  \"points\": 5\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/ai/problem-drafts",
+            "description": "Recruiter only. Generates a structured problem draft for review. The result is not saved automatically. Requires OPENAI_API_KEY on the backend."
+          },
+          "response": [
+            {
+              "name": "Generate AI problem draft — sample",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"topic\": \"React state management\",\n  \"type\": \"MCQ\",\n  \"difficulty\": \"MEDIUM\",\n  \"points\": 5\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": "{{baseUrl}}/ai/problem-drafts"
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"AI problem draft generated successfully.\",\n  \"data\": {\n    \"title\": \"React State Synchronization\",\n    \"question\": \"Which approach best prevents stale derived state in a React component?\",\n    \"type\": \"MCQ\",\n    \"options\": [\n      \"Compute derived values during render from the source state\",\n      \"Mirror every value in a second state variable\",\n      \"Update derived state inside an unrelated timeout\",\n      \"Mutate the previous state object directly\"\n    ],\n    \"correctAnswer\": \"Compute derived values during render from the source state\",\n    \"expectedAnswer\": null,\n    \"points\": 5\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Suggest AI evaluation for written submission",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": "{{baseUrl}}/ai/submissions/77777777-7777-4777-8777-777777777777/evaluation-suggestion",
+            "description": "Recruiter only. Analyzes a pending written submission and returns a non-final score and feedback suggestion for human review. Requires OPENAI_API_KEY on the backend."
+          },
+          "response": [
+            {
+              "name": "Suggest AI evaluation — sample",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": "{{baseUrl}}/ai/submissions/77777777-7777-4777-8777-777777777777/evaluation-suggestion"
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"AI evaluation suggestion generated successfully.\",\n  \"data\": {\n    \"submissionId\": \"77777777-7777-4777-8777-777777777777\",\n    \"suggestedScore\": 4,\n    \"maxScore\": 5,\n    \"feedback\": \"The answer identifies the main synchronization concern and explains the preferred approach, but it omits one edge case.\",\n    \"strengths\": [\n      \"Correctly identifies the source of truth\",\n      \"Provides a relevant implementation rationale\"\n    ],\n    \"concerns\": [\n      \"Does not discuss updates triggered by asynchronous data\"\n    ],\n    \"confidence\": \"HIGH\"\n  }\n}"
+            }
+          ]
         }
       ]
     }

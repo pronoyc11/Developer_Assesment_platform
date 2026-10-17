@@ -53,6 +53,9 @@ export const env = {
   SMTP_FROM:
     process.env.SMTP_FROM ??
     "Developer Assessment Platform <noreply@example.com>",
+
+  OPENAI_API_KEY: process.env.OPENAI_API_KEY ?? "",
+  OPENAI_MODEL: process.env.OPENAI_MODEL ?? "gpt-4o-mini",
 } as const;
 
 export type Env = typeof env;
