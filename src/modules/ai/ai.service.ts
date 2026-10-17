@@ -26,7 +26,6 @@ type JsonSchema = Record<string, unknown>;
 
 const problemDraftJsonSchema: JsonSchema = {
   type: "object",
-  additionalProperties: false,
   required: ["title", "question", "type", "options", "correctAnswer", "expectedAnswer", "points"],
   properties: {
     title: { type: "string" },
@@ -41,7 +40,6 @@ const problemDraftJsonSchema: JsonSchema = {
 
 const evaluationJsonSchema: JsonSchema = {
   type: "object",
-  additionalProperties: false,
   required: ["suggestedScore", "feedback", "strengths", "concerns", "confidence"],
   properties: {
     suggestedScore: { type: "integer" },
@@ -99,7 +97,11 @@ const requestStructured = async <T>(
 
   const payload = await response.json().catch(() => null);
   if (!response.ok) {
-    throw new AppError(502, "The Gemini AI provider rejected the request.");
+    const providerMessage =
+      payload && typeof payload === "object" && "error" in payload && payload.error && typeof payload.error === "object" && "message" in payload.error
+        ? String(payload.error.message)
+        : "The Gemini AI provider rejected the request.";
+    throw new AppError(502, `Gemini request failed: ${providerMessage}`);
   }
   try {
     return JSON.parse(extractOutputText(payload)) as T;
